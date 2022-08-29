@@ -17,6 +17,8 @@ This is a toy realtime chat app. The goal is to learn:
   - Need to apply db models.
 - [ ] Database abstraction layer
   - Nearly done, need to wire up to OTP backend
+  - added db migrations, structs, context modules
+  - added db seed file for dev
 - [ ] Phoenix LiveView Frontend
   - Not started
   - [tailwind??](https://tailwindcss.com/)
