@@ -1,12 +1,10 @@
 defmodule ExChat.Post do
   alias ExChat.{User}
 
-  defstruct [
-    id: "",
-    content: "",
-    user: nil,
-    channel_id: ""
-  ]
+  defstruct id: "",
+            content: "",
+            user: nil,
+            channel_id: ""
 
   def new(opts) do
     %__MODULE__{

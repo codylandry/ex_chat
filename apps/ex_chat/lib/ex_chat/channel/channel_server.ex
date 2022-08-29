@@ -25,17 +25,6 @@ defmodule ExChat.ChannelServer do
     }
   end
 
-  @doc """
-  Gracefully stops channel process
-  """
-  def stop(channel_id), do: GenServer.stop(via_tuple(channel_id))
-
-  @doc """
-  Crashes the channel process
-  For demonstration purposes only.
-  """
-  def crash(channel_id), do: GenServer.cast(via_tuple(channel_id), :raise)
-
   def get_channel(channel_id) do
     GenServer.call(via_tuple(channel_id), :get_channel)
   end
@@ -59,6 +48,17 @@ defmodule ExChat.ChannelServer do
   def remove_post(channel_id, post_id) do
     GenServer.cast(via_tuple(channel_id), {:remove_post, post_id})
   end
+
+  @doc """
+  Gracefully stops channel process
+  """
+  def stop(channel_id), do: GenServer.stop(via_tuple(channel_id))
+
+  @doc """
+  Crashes the channel process
+  For demonstration purposes only.
+  """
+  def crash(channel_id), do: GenServer.cast(via_tuple(channel_id), :raise)
 
   # Callbacks
 

@@ -1,6 +1,6 @@
 # ExChat
 
-**TODO: Add description**
+Manages supervision tree to track state of all chat channels
 
 ## Installation
 

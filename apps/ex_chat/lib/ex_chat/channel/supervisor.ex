@@ -1,6 +1,6 @@
 defmodule ExChat.Channel.Supervisor do
   use DynamicSupervisor
-  alias ExChat.{Channel}
+  alias ExChat.{Channel, ChannelServer}
 
   def start_link(_arg) do
     DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -12,11 +12,7 @@ defmodule ExChat.Channel.Supervisor do
 
   # Start a Player process and add it to supervision
   def add_channel(%Channel{} = channel) do
-    # Note that start_child now directly takes in a child_spec.
-    child_spec = {Channel, channel}
-    # Equivalent to:
-    # child_spec = Player.child_spec({player_name, game_id})
-    DynamicSupervisor.start_child(__MODULE__, child_spec)
+    DynamicSupervisor.start_child(__MODULE__, ChannelServer.child_spec(channel))
   end
 
   # Terminate a Player process and remove it from supervision

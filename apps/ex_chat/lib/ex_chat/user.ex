@@ -1,8 +1,6 @@
 defmodule ExChat.User do
-  defstruct [
-    id: "",
-    name: ""
-  ]
+  defstruct id: "",
+            name: ""
 
   def new(opts) do
     %__MODULE__{
