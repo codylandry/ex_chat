@@ -6,6 +6,7 @@ defmodule ExChatDal.Posts.Post do
   schema "posts" do
     field :content, :string
     belongs_to :channel, ExChatDal.Channels.Channel
+    belongs_to :author, ExChatDal.Accounts.User
 
     timestamps()
   end

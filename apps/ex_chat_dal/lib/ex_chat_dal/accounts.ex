@@ -5,10 +5,21 @@ defmodule ExChatDal.Accounts do
 
   import Ecto.Query, warn: false
   alias ExChatDal.Repo
-
   alias ExChatDal.Accounts.{User, UserToken, UserNotifier}
+  alias ExChatDal.Channels.{ChannelMember, Channel}
 
   ## Database getters
+
+  def list_channels_by_member_id(member_id) do
+    from(
+      m in ChannelMember,
+      join: c in Channel,
+      on: c.id == m.channel_id,
+      where: m.member_id == ^member_id,
+      select: c
+    )
+    |> Repo.all()
+  end
 
   @doc """
   Gets a user by email.

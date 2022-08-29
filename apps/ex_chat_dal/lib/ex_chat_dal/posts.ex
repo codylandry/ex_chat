@@ -10,6 +10,14 @@ defmodule ExChatDal.Posts do
     |> Repo.all
   end
 
+  def list_posts_by_author_id(author_id) do
+    from(
+      p in Post,
+      where: p.author_id == ^author_id
+    )
+    |> Repo.all
+  end
+
   def create_post(attrs) do
     %Post{}
     |> Post.changeset(attrs)
