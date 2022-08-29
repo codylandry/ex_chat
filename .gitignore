@@ -36,3 +36,6 @@ npm-debug.log
 .idea
 
 config/*.secret.*
+
+# OS X specific
+.DS_Store
