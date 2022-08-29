@@ -3,12 +3,13 @@ defmodule ExChatChannelServerTest do
   import ExUnit.CaptureLog
   alias ExChat.{ChannelServer, Channel, User, Post}
 
+  def random_id, do: Enum.random(0..10000)
+
   setup do
-    channel = Channel.new(id: Enum.random(0..10000), name: "my-channel")
+    channel = Channel.new(id: random_id(), name: "my-channel")
     {:ok, pid} = ChannelServer.start_link(channel)
 
     on_exit(fn ->
-      # immediately kill process
       Process.exit(pid, :kill)
     end)
 
@@ -35,13 +36,13 @@ defmodule ExChatChannelServerTest do
 
   describe "add_member/2" do
     test "adds member to channel members list", context do
-      user = User.new(id: Enum.random(0..10000), name: "bob")
+      user = User.new(id: random_id(), name: "bob")
       ChannelServer.add_member(context.channel.id, user)
       assert ChannelServer.get_channel(context.channel.id).members == [user]
     end
 
     test "dedupes members by id", context do
-      random_id = Enum.random(0..10000)
+      random_id = random_id()
       user1 = User.new(id: random_id, name: "bob")
       user2 = User.new(id: random_id, name: "tom")
       ChannelServer.add_member(context.channel.id, user1)
@@ -52,8 +53,8 @@ defmodule ExChatChannelServerTest do
 
   describe "remove_member/2" do
     test "removes member from channel members list", context do
-      user1 = User.new(id: Enum.random(0..10000), name: "bob")
-      user2 = User.new(id: Enum.random(0..10000), name: "tom")
+      user1 = User.new(id: random_id(), name: "bob")
+      user2 = User.new(id: random_id(), name: "tom")
       ChannelServer.add_member(context.channel.id, user1)
       ChannelServer.add_member(context.channel.id, user2)
       assert ChannelServer.get_channel(context.channel.id).members == [user2, user1]
@@ -62,8 +63,8 @@ defmodule ExChatChannelServerTest do
     end
 
     test "ignores when member not in list", context do
-      user1 = User.new(id: Enum.random(0..10000), name: "bob")
-      user2 = User.new(id: Enum.random(0..10000), name: "tom")
+      user1 = User.new(id: random_id(), name: "bob")
+      user2 = User.new(id: random_id(), name: "tom")
       ChannelServer.add_member(context.channel.id, user1)
       assert ChannelServer.get_channel(context.channel.id).members == [user1]
       ChannelServer.remove_member(context.channel.id, user2.id)
@@ -73,8 +74,8 @@ defmodule ExChatChannelServerTest do
 
   describe "is_member?/2" do
     test "returns whether a user with user_id is in the channel members list", context do
-      user1 = User.new(id: Enum.random(0..10000), name: "bob")
-      user2 = User.new(id: Enum.random(0..10000), name: "tom")
+      user1 = User.new(id: random_id(), name: "bob")
+      user2 = User.new(id: random_id(), name: "tom")
       ChannelServer.add_member(context.channel.id, user1)
       assert ChannelServer.get_channel(context.channel.id).members == [user1]
       assert ChannelServer.is_member?(context.channel.id, user1.id)
@@ -84,11 +85,11 @@ defmodule ExChatChannelServerTest do
 
   describe "add_post/2" do
     test "adds post to channel posts list", context do
-      user1 = User.new(id: Enum.random(0..10000), name: "bob")
+      user1 = User.new(id: random_id(), name: "bob")
 
       post =
         Post.new(
-          id: Enum.random(0..10000),
+          id: random_id(),
           channel_id: context.channel.id,
           user: user1,
           content: "some post content"
@@ -99,11 +100,11 @@ defmodule ExChatChannelServerTest do
     end
 
     test "should not add posts with a different channel id", context do
-      user1 = User.new(id: Enum.random(0..10000), name: "bob")
+      user1 = User.new(id: random_id(), name: "bob")
 
       post =
         Post.new(
-          id: Enum.random(0..10000),
+          id: random_id(),
           channel_id: 9999,
           user: user1,
           content: "some post content"
@@ -119,11 +120,11 @@ defmodule ExChatChannelServerTest do
 
   describe "remove_post/2" do
     test "removes post from channel post list when exists", context do
-      user1 = User.new(id: Enum.random(0..10000), name: "bob")
+      user1 = User.new(id: random_id(), name: "bob")
 
       post1 =
         Post.new(
-          id: Enum.random(0..10000),
+          id: random_id(),
           channel_id: context.channel.id,
           user: user1,
           content: "post content 1"
@@ -131,7 +132,7 @@ defmodule ExChatChannelServerTest do
 
       post2 =
         Post.new(
-          id: Enum.random(0..10000),
+          id: random_id(),
           channel_id: context.channel.id,
           user: user1,
           content: "post content 2"
@@ -144,11 +145,11 @@ defmodule ExChatChannelServerTest do
     end
 
     test "does nothing when no post with id == post_id in channel posts list", context do
-      user1 = User.new(id: Enum.random(0..10000), name: "bob")
+      user1 = User.new(id: random_id(), name: "bob")
 
       post1 =
         Post.new(
-          id: Enum.random(0..10000),
+          id: random_id(),
           channel_id: context.channel.id,
           user: user1,
           content: "post content 1"
@@ -156,7 +157,7 @@ defmodule ExChatChannelServerTest do
 
       post2 =
         Post.new(
-          id: Enum.random(0..10000),
+          id: random_id(),
           channel_id: context.channel.id,
           user: user1,
           content: "post content 2"
