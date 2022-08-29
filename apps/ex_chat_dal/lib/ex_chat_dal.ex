@@ -3,16 +3,14 @@ defmodule ExChatDal do
   Documentation for `ExChatDal`.
   """
 
-  @doc """
-  Hello world.
+  use Application
 
-  ## Examples
+  def start(_type, _args) do
+    children = [
+      ExChatDal.Repo
+    ]
 
-      iex> ExChatDal.hello()
-      :world
-
-  """
-  def hello do
-    :world
+    opts = [strategy: :one_for_one, name: ExChatDal.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 end

@@ -9,10 +9,12 @@
 # move said applications out of the umbrella.
 import Config
 
-# Sample configuration:
-#
-#     config :logger, :console,
-#       level: :info,
-#       format: "$date $time [$level] $metadata$message\n",
-#       metadata: [:user_id]
-#
+config :ex_chat_dal, ExChatDal.Repo,
+  database: "ex_chat_#{Mix.env()}",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost"
+
+config :ex_chat_dal,
+  ecto_repos: [ExChatDal.Repo]
+
