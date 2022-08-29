@@ -18,14 +18,15 @@ defmodule ExChatDal.MixProject do
   def application do
     [
       mod: {ExChatDal, []},
-      extra_applications: [:logger]
+      extra_applications: [:logger, :bcrypt]
     ]
   end
 
   defp deps do
     [
       {:ecto_sql, "~> 3.8"},
-      {:postgrex, "~> 0.16.4"}
+      {:postgrex, "~> 0.16.4"},
+      {:bcrypt_elixir, "~> 1.1"}
     ]
   end
 end
