@@ -1,4 +1,6 @@
 defmodule ExChat.User do
+  @moduledoc "Represents a chat user who can be members of chat channels"
+
   defstruct id: "",
             name: ""
 

@@ -1,4 +1,8 @@
 defmodule ExChat.Channel do
+  @moduledoc """
+  Represents a chat channel including its members, posts and metadata like name.
+  """
+
   alias ExChat.{Channel, User, Post}
 
   defstruct id: "",

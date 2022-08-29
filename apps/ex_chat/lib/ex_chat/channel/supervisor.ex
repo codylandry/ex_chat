@@ -1,4 +1,4 @@
-defmodule ExChat.Channel.Supervisor do
+defmodule ExChat.ChannelSupervisor do
   use DynamicSupervisor
   alias ExChat.{Channel, ChannelServer}
 
