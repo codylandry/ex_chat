@@ -11,7 +11,8 @@ defmodule ExChatDal.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -28,5 +29,14 @@ defmodule ExChatDal.MixProject do
       {:postgrex, "~> 0.16.4"},
       {:bcrypt_elixir, "~> 1.1"}
     ]
+  end
+
+  defp aliases do
+    [] ++
+      if Mix.env() == :dev do
+        ["ecto.setup": ["ecto.create", "ecto.load --skip-if-loaded", "ecto.migrate", "run priv/repo/seeds.exs"]]
+      else
+        []
+      end
   end
 end

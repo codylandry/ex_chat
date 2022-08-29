@@ -13,8 +13,9 @@ defmodule ExChatDal.Posts.Post do
 
   def changeset(%Post{} = post, attrs) do
     post
-    |> cast(attrs, [:content, :channel_id])
-    |> validate_required([:content, :channel_id])
+    |> cast(attrs, [:content, :channel_id, :author_id])
+    |> validate_required([:content, :channel_id, :author_id])
     |> assoc_constraint(:channel)
+    |> assoc_constraint(:author)
   end
 end
