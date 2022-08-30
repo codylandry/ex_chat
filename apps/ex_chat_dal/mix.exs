@@ -28,7 +28,7 @@ defmodule ExChatDal.MixProject do
     [
       {:ecto_sql, "~> 3.8"},
       {:postgrex, "~> 0.16.4"},
-      {:bcrypt_elixir, "~> 1.1"}
+      {:bcrypt_elixir, "~> 3.0"}
     ]
   end
 
