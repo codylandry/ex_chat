@@ -19,7 +19,7 @@ config :ex_chat_dal,
        ecto_repos: [ExChatDal.Repo]
 
 config :ex_chat_web,
-       generators: [context_app: :ex_chat]
+       generators: [context_app: :ex_chat_dal]
 
 # Configures the endpoint
 config :ex_chat_web, ExChatWeb.Endpoint,

@@ -49,13 +49,13 @@ defmodule ExChatWeb.Router do
   #
   # Note that preview only shows emails that were sent by the same
   # node running the Phoenix server.
-  if Mix.env() == :dev do
-    scope "/dev" do
-      pipe_through :browser
-
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
-    end
-  end
+#  if Mix.env() == :dev do
+#    scope "/dev" do
+#      pipe_through :browser
+#
+#      forward "/mailbox", Plug.Swoosh.MailboxPreview
+#    end
+#  end
 
   ## Authentication routes
 
@@ -88,5 +88,13 @@ defmodule ExChatWeb.Router do
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
+  end
+
+  live_session :app, on_mount: ExChatWeb.Live.Auth do
+    scope "/", ExChatWeb do
+      pipe_through [:browser, :require_authenticated_user]
+
+      live "/app", Live.App
+    end
   end
 end
