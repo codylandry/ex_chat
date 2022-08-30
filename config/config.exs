@@ -18,3 +18,4 @@ config :ex_chat_dal, ExChatDal.Repo,
 config :ex_chat_dal,
   ecto_repos: [ExChatDal.Repo]
 
+import_config "#{Mix.env()}.exs"

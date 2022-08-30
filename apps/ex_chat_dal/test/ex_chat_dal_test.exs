@@ -1,8 +1,17 @@
 defmodule ExChatDalTest do
-  use ExUnit.Case
-  doctest ExChatDal
+  use ExChatDal.RepoCase
 
-  test "greets the world" do
-    assert ExChatDal.hello() == :world
-  end
+  alias ExChatDal.{
+    Repo,
+    Channels,
+    Accounts,
+    Posts
+  }
+
+  alias Channels.Channel
+  alias Posts.Post
+  alias Accounts.{User, UserToken, UserNotifier}
+
+  doctest ExChatDal.Channels, import: true
+  doctest ExChatDal.Posts, import: true
 end

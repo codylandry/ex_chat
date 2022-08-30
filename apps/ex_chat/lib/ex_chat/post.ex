@@ -1,6 +1,6 @@
 defmodule ExChat.Post do
   @moduledoc "Represents a single 'post' including its author, content and related channel id"
-  alias ExChat.{User}
+  alias ExChat.User
 
   defstruct id: "",
             content: "",

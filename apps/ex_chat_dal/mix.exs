@@ -12,7 +12,8 @@ defmodule ExChatDal.MixProject do
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases()
+      elixirc_paths: elixirc_paths(Mix.env()),
+      aliases: aliases(Mix.env())
     ]
   end
 
@@ -31,12 +32,24 @@ defmodule ExChatDal.MixProject do
     ]
   end
 
-  defp aliases do
-    [] ++
-      if Mix.env() == :dev do
-        ["ecto.setup": ["ecto.create", "ecto.load --skip-if-loaded", "ecto.migrate", "run priv/repo/seeds.exs"]]
-      else
-        []
-      end
-  end
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
+
+  defp aliases(:dev),
+    do:
+      aliases(:all) ++
+        [
+          "ecto.setup": [
+            "ecto.create",
+            "ecto.load --skip-if-loaded",
+            "ecto.migrate",
+            "run priv/repo/seeds.exs"
+          ]
+        ]
+
+  defp aliases(_),
+    do: [
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+    ]
 end
