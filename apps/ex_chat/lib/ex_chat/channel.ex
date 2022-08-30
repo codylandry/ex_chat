@@ -24,8 +24,8 @@ defmodule ExChat.Channel do
   ## Examples:
       # setup
       iex> alias ExChat.{Channel, User}
-      iex> user1 = User.new(id: 1, name: "bob")
-      iex> user2 = User.new(id: 2, name: "tom")
+      iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
+      iex> user2 = User.new(id: 2, email: "tom-fake@email.com", username: "tom")
       iex> channel = Channel.new(id: 1, name: "test", members: [user1])
       iex> channel.members
       [user1]
@@ -51,8 +51,8 @@ defmodule ExChat.Channel do
   ## Examples
       # setup
       iex> alias ExChat.{Channel, User}
-      iex> user1 = User.new(id: 1, name: "bob")
-      iex> user2 = User.new(id: 2, name: "tom")
+      iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
+      iex> user2 = User.new(id: 2, email: "tom-fake@email.com", username: "tom")
       iex> channel = Channel.new(id: 1, name: "test", members: [user2, user1])
       iex> channel.members
       [user2, user1]
@@ -76,8 +76,8 @@ defmodule ExChat.Channel do
   ## Examples:
       # setup
       iex> alias ExChat.{Channel, User}
-      iex> user1 = User.new(id: 1, name: "bob")
-      iex> user2 = User.new(id: 2, name: "tom")
+      iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
+      iex> user2 = User.new(id: 2, email: "tom-fake@email.com", username: "tom")
       iex> channel = Channel.new(id: 1, name: "test", members: [user1])
       iex> channel.members
       [user1]
@@ -100,7 +100,7 @@ defmodule ExChat.Channel do
   ## Examples
       # setup
       iex> alias ExChat.{Channel, User, Post}
-      iex> user1 = User.new(id: 1, name: "bob")
+      iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
       iex> channel = Channel.new(id: 1, name: "test", members: [user1])
       iex> channel.posts
       []
@@ -131,7 +131,7 @@ defmodule ExChat.Channel do
   ## Examples
       # setup
       iex> alias ExChat.{Channel, User, Post}
-      iex> user1 = User.new(id: 1, name: "bob")
+      iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
       iex> channel = Channel.new(id: 1, name: "test", members: [user1])
       iex> channel.posts
       []

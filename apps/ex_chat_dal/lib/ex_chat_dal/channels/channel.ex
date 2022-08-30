@@ -5,6 +5,7 @@ defmodule ExChatDal.Channels.Channel do
   schema "channels" do
     field :name, :string
     many_to_many :members, ExChatDal.Accounts.User, join_through: ExChatDal.Channels.ChannelMember
+    has_many :posts, ExChatDal.Posts.Post
 
     timestamps()
   end

@@ -4,14 +4,14 @@ defmodule ExChat.Post do
 
   defstruct id: "",
             content: "",
-            user: nil,
+            author: nil,
             channel_id: ""
 
   def new(opts) do
     %__MODULE__{
       id: Keyword.fetch!(opts, :id),
       content: Keyword.fetch!(opts, :content),
-      user: Keyword.fetch!(opts, :user),
+      author: Keyword.fetch!(opts, :user),
       channel_id: Keyword.fetch!(opts, :channel_id)
     }
   end
