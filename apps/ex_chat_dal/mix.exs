@@ -42,7 +42,6 @@ defmodule ExChatDal.MixProject do
         [
           "ecto.setup": [
             "ecto.create",
-            "ecto.load --skip-if-loaded",
             "ecto.migrate",
             "run priv/repo/seeds.exs"
           ]
