@@ -1,4 +1,4 @@
-# ExChat
+# ExChatOtp
 
 Manages supervision tree to track state of all chat channels
 

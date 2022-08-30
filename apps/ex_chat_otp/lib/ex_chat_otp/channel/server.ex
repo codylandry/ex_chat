@@ -1,11 +1,11 @@
-defmodule ExChat.ChannelServer do
+defmodule ExChatOtp.ChannelServer do
   @moduledoc """
   Manages state for a chat channel.
   Tracks relevant state such as members and posts.
   """
 
   use GenServer
-  alias ExChat.{Channel, User, Post}
+  alias ExChatOtp.{Channel, User, Post}
   require Logger
 
   def start_link(%Channel{} = channel) do
@@ -13,7 +13,7 @@ defmodule ExChat.ChannelServer do
   end
 
   def via_tuple(channel_id),
-    do: {:via, Registry, {ExChat.ChannelRegistry, channel_name(channel_id)}}
+    do: {:via, Registry, {ExChatOtp.ChannelRegistry, channel_name(channel_id)}}
 
   def channel_name(channel_id), do: "channel:#{channel_id}"
 

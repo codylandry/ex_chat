@@ -1,3 +1,0 @@
-defmodule ExChat do
-
-end

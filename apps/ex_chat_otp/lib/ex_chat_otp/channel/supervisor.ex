@@ -1,6 +1,6 @@
-defmodule ExChat.ChannelSupervisor do
+defmodule ExChatOtp.ChannelSupervisor do
   use DynamicSupervisor
-  alias ExChat.{Channel, ChannelServer}
+  alias ExChatOtp.{Channel, ChannelServer}
 
   def start_link(_arg) do
     DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)

@@ -1,7 +1,7 @@
-defmodule ExChatChannelServerTest do
+defmodule ExChatOtpChannelServerTest do
   use ExUnit.Case, async: true
   import ExUnit.CaptureLog
-  alias ExChat.{ChannelServer, Channel, User, Post}
+  alias ExChatOtp.{ChannelServer, Channel, User, Post}
 
   def random_id, do: Enum.random(0..10000)
 
@@ -26,7 +26,7 @@ defmodule ExChatChannelServerTest do
     test "reliably identifies process", context do
       [{returned_pid, _}] =
         Registry.lookup(
-          ExChat.ChannelRegistry,
+          ExChatOtp.ChannelRegistry,
           ChannelServer.channel_name(context.channel.id)
         )
 

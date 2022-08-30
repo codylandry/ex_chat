@@ -1,9 +1,9 @@
-defmodule ExChat.Channel do
+defmodule ExChatOtp.Channel do
   @moduledoc """
   Represents a chat channel including its members, posts and metadata like name.
   """
 
-  alias ExChat.{Channel, User, Post}
+  alias ExChatOtp.{Channel, Post}
 
   defstruct id: "",
             name: "",
@@ -23,7 +23,7 @@ defmodule ExChat.Channel do
   Adds user to channel members list
   ## Examples:
       # setup
-      iex> alias ExChat.{Channel, User}
+      iex> alias ExChatOtp.{Channel, User}
       iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
       iex> user2 = User.new(id: 2, email: "tom-fake@email.com", username: "tom")
       iex> channel = Channel.new(id: 1, name: "test", members: [user1])
@@ -50,7 +50,7 @@ defmodule ExChat.Channel do
   Removes member with id == user_id
   ## Examples
       # setup
-      iex> alias ExChat.{Channel, User}
+      iex> alias ExChatOtp.{Channel, User}
       iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
       iex> user2 = User.new(id: 2, email: "tom-fake@email.com", username: "tom")
       iex> channel = Channel.new(id: 1, name: "test", members: [user2, user1])
@@ -75,7 +75,7 @@ defmodule ExChat.Channel do
 
   ## Examples:
       # setup
-      iex> alias ExChat.{Channel, User}
+      iex> alias ExChatOtp.{Channel, User}
       iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
       iex> user2 = User.new(id: 2, email: "tom-fake@email.com", username: "tom")
       iex> channel = Channel.new(id: 1, name: "test", members: [user1])
@@ -99,7 +99,7 @@ defmodule ExChat.Channel do
   Adds a post to channel posts list
   ## Examples
       # setup
-      iex> alias ExChat.{Channel, User, Post}
+      iex> alias ExChatOtp.{Channel, User, Post}
       iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
       iex> channel = Channel.new(id: 1, name: "test", members: [user1])
       iex> channel.posts
@@ -130,7 +130,7 @@ defmodule ExChat.Channel do
   Removes post with id == post_id from channel posts list
   ## Examples
       # setup
-      iex> alias ExChat.{Channel, User, Post}
+      iex> alias ExChatOtp.{Channel, User, Post}
       iex> user1 = User.new(id: 1, email: "bob-fake@email.com", username: "bob")
       iex> channel = Channel.new(id: 1, name: "test", members: [user1])
       iex> channel.posts

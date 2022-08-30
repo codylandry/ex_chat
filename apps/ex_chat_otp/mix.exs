@@ -1,9 +1,9 @@
-defmodule ExChat.MixProject do
+defmodule ExChatOtp.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :ex_chat,
+      app: :ex_chat_otp,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -21,7 +21,7 @@ defmodule ExChat.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {ExChat.Application, []}
+      mod: {ExChatOtp.Application, []}
     ]
   end
 

@@ -1,4 +1,4 @@
-defmodule ExChat.Application do
+defmodule ExChatOtp.Application do
   @moduledoc """
   Supervises both the channel process registry and channel dynamic supervisor
   """
@@ -9,13 +9,13 @@ defmodule ExChat.Application do
   def start(_type, _args) do
     children = [
       # maps channel_id to its managing process
-      {Registry, keys: :unique, name: ExChat.ChannelRegistry},
+      {Registry, keys: :unique, name: ExChatOtp.ChannelRegistry},
 
       # Supervises all channel servers
-      ExChat.ChannelSupervisor
+      ExChatOtp.ChannelSupervisor
     ]
 
-    opts = [strategy: :one_for_one, name: ExChat.Supervisor]
+    opts = [strategy: :one_for_one, name: ExChatOtp.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
