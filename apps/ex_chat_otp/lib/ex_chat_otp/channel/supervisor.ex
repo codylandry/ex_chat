@@ -1,6 +1,7 @@
 defmodule ExChatOtp.ChannelSupervisor do
   use DynamicSupervisor
-  alias ExChatOtp.{Channel, ChannelServer}
+  alias ExChatOtp.ChannelServer
+  alias ExChatDal.{Channels}
 
   def start_link(_arg) do
     DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -11,13 +12,13 @@ defmodule ExChatOtp.ChannelSupervisor do
   end
 
   # Start a Player process and add it to supervision
-  def add_channel(%Channel{} = channel) do
-    DynamicSupervisor.start_child(__MODULE__, ChannelServer.child_spec(channel))
+  def add_channel(channel_id) do
+    DynamicSupervisor.start_child(__MODULE__, ChannelServer.child_spec(channel_id))
   end
 
   # Terminate a Player process and remove it from supervision
-  def remove_channel(channel) do
-    DynamicSupervisor.terminate_child(__MODULE__, channel)
+  def remove_channel(channel_id) do
+    DynamicSupervisor.terminate_child(__MODULE__, ChannelServer.channel_name(channel_id))
   end
 
   # Nice utility method to check which processes are under supervision

@@ -7,7 +7,7 @@ defmodule ExChatDal.Posts do
       p in Post,
       where: p.channel_id == ^channel_id
     )
-    |> Repo.all
+    |> Repo.all()
   end
 
   def list_posts_by_author_id(author_id) do
@@ -15,22 +15,30 @@ defmodule ExChatDal.Posts do
       p in Post,
       where: p.author_id == ^author_id
     )
-    |> Repo.all
+    |> Repo.all()
   end
 
-  def create_post(attrs) do
-    %Post{}
-    |> Post.changeset(attrs)
-    |> Repo.insert()
+  def create_post(channel_id, attrs) do
+    post =
+      %Post{}
+      |> Post.changeset(Map.put(attrs, :channel_id, channel_id))
+      |> Repo.insert!()
+
+    from(p in Post, where: p.id == ^post.id)
+    |> preload(:author)
+    |> Repo.one!()
   end
 
   def update_post(%Post{} = post, attrs) do
     post
     |> Post.changeset(attrs)
-    |> Repo.update()
+    |> Repo.update!()
   end
 
-  def delete_post(%Post{} = post), do: Repo.delete(post)
+  def delete_post(post_id) do
+    from(p in Post, where: :id == ^post_id)
+    |> Repo.delete_all()
+  end
 
   def list_posts, do: Repo.all(Post)
 

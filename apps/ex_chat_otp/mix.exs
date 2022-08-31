@@ -20,14 +20,16 @@ defmodule ExChatOtp.MixProject do
 
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :phoenix_pubsub],
       mod: {ExChatOtp.Application, []}
     ]
   end
 
   defp deps do
     [
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:phoenix_pubsub, "~> 2.1"},
+      {:ex_chat_dal, in_umbrella: true}
     ]
   end
 end

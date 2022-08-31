@@ -43,6 +43,20 @@ defmodule ExChatDal.Channels do
   end
 
   @doc """
+  Removes a User struct from channel members list and updates db
+  ## Examples
+      iex> {:ok, user} = Accounts.register_user(%{email: "fake@email.com", username: "fake", password: "password"})
+      iex> {:ok, %Channel{} = channel} = create_channel(%{name: "test-channel"})
+      iex> add_member(channel.id, user.id)
+      iex> list_members_by_channel_id(channel.id)
+      [user]
+  """
+  def remove_member(channel_id, user_id) do
+    from(cm in ChannelMember, where: cm.channel_id == ^channel_id and cm.member_id == ^user_id)
+    |> Repo.delete_all()
+  end
+
+  @doc """
   Returns all member User structs for channel
   ## Examples
       iex> {:ok, user} = Accounts.register_user(%{email: "fake@email.com", username: "fake", password: "password"})
@@ -91,5 +105,8 @@ defmodule ExChatDal.Channels do
       iex> get_channel(c1.id)
       c1
   """
-  def get_channel(id), do: Repo.get!(Channel, id)
+  def get_channel(id) do
+    from(c in Channel, where: c.id == ^id, preload: [:members, :posts])
+    |> Repo.one!()
+  end
 end

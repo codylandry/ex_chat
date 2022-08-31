@@ -8,7 +8,6 @@ defmodule ExChatWeb.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Phoenix.PubSub, name: ExChatWeb.PubSub},
       # Start the Telemetry supervisor
       ExChatWeb.Telemetry,
       # Start the Endpoint (http/https)

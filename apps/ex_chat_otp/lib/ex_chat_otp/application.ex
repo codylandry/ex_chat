@@ -8,11 +8,10 @@ defmodule ExChatOtp.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # maps channel_id to its managing process
+      {Phoenix.PubSub, name: ExChatOtp.PubSub},
       {Registry, keys: :unique, name: ExChatOtp.ChannelRegistry},
-
-      # Supervises all channel servers
-      ExChatOtp.ChannelSupervisor
+      ExChatOtp.ChannelSupervisor,
+      ExChatOtp.InitializationTask
     ]
 
     opts = [strategy: :one_for_one, name: ExChatOtp.Supervisor]
