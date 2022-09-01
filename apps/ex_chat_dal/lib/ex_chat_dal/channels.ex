@@ -83,8 +83,9 @@ defmodule ExChatDal.Channels do
       iex> delete_channel(channel)
       iex> assert_raise Ecto.NoResultsError, fn -> get_channel(channel.id) end
   """
-  def delete_channel(%Channel{} = channel) do
-    Repo.delete(channel)
+  def delete_channel(channel_id) do
+    from(c in Channel, where: c.id == ^channel_id)
+    |> Repo.delete_all()
   end
 
   @doc """
@@ -105,8 +106,15 @@ defmodule ExChatDal.Channels do
       iex> get_channel(c1.id)
       c1
   """
-  def get_channel(id) do
-    from(c in Channel, where: c.id == ^id, preload: [:members, :posts])
+  def get_channel(channel_id) do
+    from(
+      channel in Channel,
+      left_join: posts in assoc(channel, :posts),
+      left_join: members in assoc(channel, :members),
+      left_join: authors in assoc(posts, :author),
+      where: channel.id == ^channel_id,
+      preload: [posts: {posts, author: authors}, members: members]
+    )
     |> Repo.one!()
   end
 end

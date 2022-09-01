@@ -25,7 +25,7 @@ defmodule ExChatDal.Posts do
       |> Repo.insert!()
 
     from(p in Post, where: p.id == ^post.id)
-    |> preload(:author)
+    |> preload([:author, :channel])
     |> Repo.one!()
   end
 
@@ -36,7 +36,7 @@ defmodule ExChatDal.Posts do
   end
 
   def delete_post(post_id) do
-    from(p in Post, where: :id == ^post_id)
+    from(p in Post, where: p.id == ^post_id)
     |> Repo.delete_all()
   end
 

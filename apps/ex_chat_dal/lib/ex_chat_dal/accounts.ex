@@ -242,7 +242,12 @@ defmodule ExChatDal.Accounts do
   """
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query)
+
+    user =
+      query
+      |> Repo.one()
+
+    Map.put(user, :channels, list_channels_by_member_id(user.id))
   end
 
   @doc """

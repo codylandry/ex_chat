@@ -32,12 +32,16 @@ defmodule ExChatOtp.ChannelServer do
     }
   end
 
-  defp broadcast_event(channel_id, event) do
+  defp broadcast_channel_event(channel_id, event) do
     :ok = Phoenix.PubSub.broadcast(ExChatOtp.PubSub, channel_name(channel_id), event)
   end
 
   def subscribe(channel_id) do
     :ok = Phoenix.PubSub.subscribe(ExChatOtp.PubSub, channel_name(channel_id))
+  end
+
+  def unsubscribe(channel_id) do
+    :ok = Phoenix.PubSub.unsubscribe(ExChatOtp.PubSub, channel_name(channel_id))
   end
 
   defp attempt_async(state, func) do
@@ -117,7 +121,7 @@ defmodule ExChatOtp.ChannelServer do
     channel = Channels.get_channel(state.channel.id)
     state = %{channel: channel}
 
-    broadcast_event(state.channel.id,
+    broadcast_channel_event(state.channel.id,
       event: :refresh,
       channel: state.channel
     )
@@ -134,7 +138,7 @@ defmodule ExChatOtp.ChannelServer do
     user = Accounts.get_user!(user_id)
     state = %{state | channel: Channel.add_member(state.channel, user)}
 
-    broadcast_event(state.channel.id,
+    broadcast_channel_event(state.channel.id,
       event: :add_member,
       member: user
     )
@@ -150,9 +154,9 @@ defmodule ExChatOtp.ChannelServer do
       Channels.remove_member(state.channel.id, user_id)
     end)
 
-    state = %{state | channel: Channel.remove_member(state.channel.id, user_id)}
+    state = %{state | channel: Channel.remove_member(state.channel, user_id)}
 
-    broadcast_event(state.channel.id,
+    broadcast_channel_event(state.channel.id,
       event: :remove_member,
       member: member
     )
@@ -166,7 +170,12 @@ defmodule ExChatOtp.ChannelServer do
 
     post = Posts.create_post(state.channel.id, post_attrs)
 
-    broadcast_event(state.channel.id,
+    broadcast_channel_event(state.channel.id,
+      event: :add_post,
+      post: post
+    )
+
+    ExChatOtp.broadcast_event(
       event: :add_post,
       post: post
     )
@@ -181,6 +190,8 @@ defmodule ExChatOtp.ChannelServer do
   def handle_cast({:remove_post, post_id}, state) do
     post = Enum.find(state.channel.posts, fn p -> p.id == post_id end)
 
+    IO.inspect(post, label: "post")
+
     attempt_async(state, fn ->
       Posts.delete_post(post_id)
     end)
@@ -188,7 +199,7 @@ defmodule ExChatOtp.ChannelServer do
     channel = Channel.remove_post(state.channel, post_id)
     state = %{state | channel: channel}
 
-    broadcast_event(state.channel.id,
+    broadcast_channel_event(state.channel.id,
       event: :remove_post,
       post: post
     )
