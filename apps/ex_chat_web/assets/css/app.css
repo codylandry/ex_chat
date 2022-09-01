@@ -1,3 +1,38 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+
+.app {
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: minmax(60px, 20%) 1fr;
+    grid-template-rows: 1fr 50px;
+    grid-template-areas:
+        "sidebar  main"
+        "sidebar  compose";
+    overflow: hidden;
+}
+
+.app__sidebar {
+    grid-area: sidebar;
+    border-right: 1px solid black;
+    padding: 5px
+}
+
+.app__main {
+    grid-area: main;
+    padding: 5px;
+    display: flex;
+    flex-flow: column;
+    margin-top: auto;
+    overflow: scroll;
+    max-height: calc(100vh - 50px);
+}
+
+.app__compose {
+    grid-area: compose;
+    padding: 5px;
+    border-top: 1px solid black;
+}

@@ -1,66 +1,58 @@
 
-<h1 class="text-3xl font-bold underline">
-  Hello world!
-</h1>
 
-<div>
-  <ul>
-  <%= for channel <- @channels do %>
-    <li>
-      <%= live_patch channel.name, to: Routes.live_path(@socket, ExChatWeb.Live.App, channel.id) %>
-    </li>
-  <% end %>
-  </ul>
+<div class="app">
 
-  <div>
-    <form phx-submit="create-channel">
-      <label>Create new channel</label>
-      <input name="channel_name">
-    </form>
-  </div>
-</div>
-
-<%= if Map.get(assigns, :channel) do %>
-  <div>
-  <h1>
-    <%= @channel.name %>
-  </h1>
-
-  <%= if Enum.find(@channel.members, fn m -> m.id == @current_user.id end) do %>
-    <button phx-click="leave-channel">Leave</button>
-    <% else %>
-    <button phx-click="join-channel">Join</button>
-  <% end %>
-
-  <h2>Members</h2>
-  <div>
-    <%= for member <- @channel.members do %>
-      <div>
-        <%= member.email %>
-      </div>
-    <% end %>
-  </div>
-
-  <h2>Posts</h2>
-  <div>
-    <%= for post <- @channel.posts do %>
-      <div>
-        <%= post.author.email %>
-        <%= post.content %>
-        <%= if post.author.id == @current_user.id do %>
-          <button phx-click="remove-post" 
-                  phx-value-post_id={post.id}>Delete</button>
+  <div class="app__sidebar">
+    <ul>
+    <%= for channel <- @channels do %>
+      <li>
+        <%= live_patch channel.name, to: Routes.live_path(@socket, ExChatWeb.Live.App, channel.id) %>
+        <%= if Enum.find(@current_user.channels, fn m -> m.id == channel.id end) do %>
+          <button phx-click="leave-channel">Leave</button>
+          <% else %>
+          <button phx-click="join-channel">Join</button>
         <% end %>
-      </div>
+      </li>
     <% end %>
+    </ul>
+
+    <div>
+      <form phx-submit="create-channel">
+        <label>Create new channel</label>
+        <input name="channel_name">
+      </form>
+    </div>
+
+    <h2>Members</h2>
+    <div>
+      <%= for member <- @channel.members do %>
+        <div>
+          <%= member.email %>
+        </div>
+      <% end %>
+    </div>
+
   </div>
 
-  <div>
+  <div class="app__main">
+    <h2>Posts</h2>
+    <div>
+      <%= for post <- Enum.sort_by(@channel.posts, &(&1.id)) do %>
+        <div>
+          <%= post.author.email %>
+          <%= post.content %>
+          <%= if post.author.id == @current_user.id do %>
+            <button phx-click="remove-post" 
+                    phx-value-post_id={post.id}>Delete</button>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="app__compose">
     <form phx-submit="add-post">
       <input name="content">
     </form>
   </div>
-
-  
 </div>
-<% end %>
