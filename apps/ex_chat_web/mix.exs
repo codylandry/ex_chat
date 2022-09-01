@@ -49,6 +49,7 @@ defmodule ExChatWeb.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:phoenix_ecto, "~> 4.4"},
+      {:tailwind, "~> 0.1.8"},
       {:ex_chat_dal, in_umbrella: true},
       {:ex_chat_otp, in_umbrella: true}
     ]
@@ -60,7 +61,7 @@ defmodule ExChatWeb.MixProject do
   defp aliases do
     [
       setup: ["deps.get"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]
   end
 end

@@ -15,6 +15,8 @@ config :ex_chat_web, ExChatWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "2bbNLL6SyBONX140zFObpr/ZFXE5ASM6+lnVto3cagFZ+gSKm9jYpJZW+3EcCycK",
   watchers: [
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
+
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
   ]
