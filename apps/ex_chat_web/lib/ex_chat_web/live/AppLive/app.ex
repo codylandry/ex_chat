@@ -10,6 +10,11 @@ defmodule ExChatWeb.Live.App do
     channels = Channels.list_channels()
     socket = assign(socket, :channels, channels)
 
+    if connected?(socket) do
+      # Gives process a name in :observer
+      Process.register(self(), :"user:#{socket.assigns.current_user.id}")
+    end
+
     {:ok, socket}
   end
 
@@ -103,11 +108,11 @@ defmodule ExChatWeb.Live.App do
   end
 
   @impl true
-  def handle_info([event: :member_removed, channel_id: channel_id, member: member], socket) do
-    members = Enum.filter(socket.assigns.channel.members, fn m -> m.id != member.id end)
+  def handle_info([event: :member_removed, member_id: member_id, channel_id: channel_id], socket) do
+    members = Enum.filter(socket.assigns.channel.members, fn m -> m.id != member_id end)
 
     currently_viewing_channel = channel_id == socket.assigns.channel.id
-    is_current_user = member.id == socket.assigns.current_user.id
+    is_current_user = member_id == socket.assigns.current_user.id
 
     socket =
       cond do
@@ -117,11 +122,14 @@ defmodule ExChatWeb.Live.App do
         currently_viewing_channel ->
           assign(socket, :members, members)
 
+        is_current_user ->
+          socket
+          |> assign(:current_user, Accounts.get_user!(socket.assigns.current_user.id))
+          |> update_channels(socket.assigns.channels)
+
         true ->
           socket
       end
-      |> update_channels(socket.assigns.channels)
-      |> assign(:current_user, Accounts.get_user!(socket.assigns.current_user.id))
 
     {:noreply, socket}
   end

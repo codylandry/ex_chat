@@ -54,7 +54,7 @@ defmodule ExChatWeb.LiveHelpers do
 
   def post(assigns) do
     ~H"""
-    <div class="app__main__post group mb-5 first-of-type:mb-0">
+    <div id={"post-#{assigns.post.id}"} class="app__main__post group mb-5 first-of-type:mb-0">
       <div class="app__main__post__email text-sm text-accent"><%= @post.author.username %></div>
       <div class="app__main__post__content text-md"><%= @post.content %></div>
       <%= if @post.author.id == @current_user.id do %>
@@ -76,8 +76,8 @@ defmodule ExChatWeb.LiveHelpers do
   def channel_row(assigns) do
     ~H"""
     <li class="group">
-      <% cls = if @is_current_channel, do: "active", else: ""  %>
-      <%= live_patch @channel.name, to: Routes.live_path(@socket, ExChatWeb.Live.App, @channel.id), class: cls <> " pl-4 p-1 text-base-content"  %>
+      <% cls = if @is_current_channel, do: "active text-neutral-content", else: "text-base-content"  %>
+      <%= live_patch @channel.name, to: Routes.live_path(@socket, ExChatWeb.Live.App, @channel.id), class: cls <> " pl-4 p-1"  %>
       <span class="dropdown dropdown-end absolute right-0 top-0 p-0 h-full">
         <button class="opacity-0 group-hover:opacity-100">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>

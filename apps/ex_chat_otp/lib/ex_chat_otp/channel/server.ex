@@ -21,6 +21,7 @@ defmodule ExChatOtp.ChannelServer do
 
   @impl true
   def init([channel_id, creator_id]) when is_integer(channel_id) do
+    Process.register(self(), :"#{channel_name(channel_id)}")
     Logger.info("Starting #{channel_id} created by #{creator_id}")
 
     if creator_id do
@@ -143,19 +144,17 @@ defmodule ExChatOtp.ChannelServer do
   end
 
   @impl true
-  def handle_cast({:member_removed, user_id}, state) do
-    member = Enum.find(state.channel.members, fn m -> m.id == user_id end)
-
+  def handle_cast({:member_removed, member_id}, state) do
     attempt_async(state, fn ->
-      Channels.remove_member(state.channel.id, user_id)
+      Channels.remove_member(state.channel.id, member_id)
     end)
 
-    state = %{state | channel: Channel.remove_member(state.channel, user_id)}
+    state = %{state | channel: Channel.remove_member(state.channel, member_id)}
 
     ExChatOtp.broadcast_event(
       event: :member_removed,
-      channel_id: state.channel.id,
-      member: member
+      member_id: member_id,
+      channel_id: state.channel.id
     )
 
     {:noreply, state}

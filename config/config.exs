@@ -38,6 +38,8 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
+config :ex_chat_dal, ExChatDal.Mailer, adapter: Swoosh.Adapters.Sendinblue
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
@@ -57,7 +59,7 @@ config :tailwind,
     cd: Path.expand("../apps/ex_chat_web/assets", __DIR__)
   ]
 
-config :ex_chat_dal, ExChatDal.Mailer, adapter: Swoosh.Adapters.Sendinblue
+
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

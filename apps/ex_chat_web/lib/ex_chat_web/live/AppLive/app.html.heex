@@ -44,6 +44,7 @@
                     socket={@socket}/>
     <% end %>
     </ul>
+
     
     <div class="mx-auto mt-auto block" x-data="{show: false}" @click.away="show = false" >
       <form x-show="show" class="mx-auto block p-3 bg-base-300 shadow rounded-box" phx-submit="create-channel">
@@ -62,9 +63,11 @@
       <%= if length(@posts) == 0 do %>
         <span>Looks like you're the first one here.</span>
       <% end %>
+      <div id="posts">
       <%= for post <- Enum.sort_by(@posts, &(&1.inserted_at), {:desc, Date}) do %>
         <.post post={post} current_user={@current_user}></.post>
       <% end %>
+      </div>
     </div>
 
     <div class="app__compose z-0">
