@@ -20,7 +20,7 @@
           <li tabindex="0">
             <%= if @current_user do %>
               <a class="text-neutral-content">
-                <%= @current_user.email %>
+                <%= @current_user.username %>
               </a>
               <ul class="p-2 bg-base-100 shadow-lg">
                 <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
@@ -33,7 +33,6 @@
             <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
             <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
           <% end %>
-
         </ul>
       </div>
     </div>

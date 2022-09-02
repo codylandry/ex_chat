@@ -85,11 +85,12 @@ body {
 
 .app__main {
     grid-area: main;
-    padding: 5px;
+    padding: 10px;
     display: flex;
     flex-flow: column-reverse;
     max-height: calc(var(--app-height) - var(--compose-height));
     overflow-y: auto;
+    margin-bottom: 5px
 }
 
 .app__main__post {
@@ -122,8 +123,9 @@ body {
 }
 
 .app__compose__textarea {
-    @apply textarea textarea-bordered textarea-primary h-full w-full;
+    @apply textarea textarea-bordered textarea-primary h-full w-full block;
     resize: none;
-    height: 100px;
+    height: 95px;
     box-shadow: 0 0 20px -13px black;
+    margin-bottom: 5px;
 }
