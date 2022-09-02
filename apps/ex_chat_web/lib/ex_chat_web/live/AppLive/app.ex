@@ -15,18 +15,11 @@ defmodule ExChatWeb.Live.App do
 
   @impl true
   def handle_params(params, _uri, socket) do
-    current_channel_id = Map.get(socket.assigns, :channel_id)
-
-    if current_channel_id do
-      ChannelServer.unsubscribe(current_channel_id)
-    end
-
     channel_id_str = Map.get(params, "channel_id")
 
     socket =
       if channel_id_str do
         channel_id = String.to_integer(channel_id_str)
-        ChannelServer.subscribe(channel_id)
         channel = ChannelServer.get_channel(channel_id)
 
         socket
@@ -102,8 +95,7 @@ defmodule ExChatWeb.Live.App do
       if channel_id == socket.channel.id do
         socket
         |> assign(:members, members)
-
-        # |> assign_channel(:members, members)
+        |> update_channels(socket.assigns.channels)
       else
         socket
       end
@@ -120,8 +112,7 @@ defmodule ExChatWeb.Live.App do
       if channel_id == socket.channel.id do
         socket
         |> assign(:members, members)
-
-        # |> assign_channel(:members, members)
+        |> update_channels(socket.assigns.channels)
       else
         socket
       end
@@ -191,11 +182,6 @@ defmodule ExChatWeb.Live.App do
 
     {:noreply, socket}
   end
-
-  # defp assign_channel(socket, prop, value) do
-  #   channel = Map.put(socket.assigns.channel, prop, value)
-  #   assign(socket, :channel, channel)
-  # end
 
   def update_channels(socket, new_channels) do
     socket

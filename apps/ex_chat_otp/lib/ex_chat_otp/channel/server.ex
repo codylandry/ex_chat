@@ -19,6 +19,15 @@ defmodule ExChatOtp.ChannelServer do
     GenServer.start_link(__MODULE__, channel_id, name: via_tuple(channel_id))
   end
 
+  @impl true
+  def init(channel_id) when is_integer(channel_id) do
+    Logger.info("Starting #{channel_id}")
+    channel = Channels.get_channel(channel_id)
+    state = %{channel: channel}
+
+    {:ok, state}
+  end
+
   def via_tuple(channel_id),
     do: {:via, Registry, {ExChatOtp.ChannelRegistry, channel_name(channel_id)}}
 
@@ -30,18 +39,6 @@ defmodule ExChatOtp.ChannelServer do
       start: {__MODULE__, :start_link, [channel_id]},
       restart: :transient
     }
-  end
-
-  defp broadcast_channel_event(channel_id, event) do
-    :ok = Phoenix.PubSub.broadcast(ExChatOtp.PubSub, channel_name(channel_id), event)
-  end
-
-  def subscribe(channel_id) do
-    :ok = Phoenix.PubSub.subscribe(ExChatOtp.PubSub, channel_name(channel_id))
-  end
-
-  def unsubscribe(channel_id) do
-    :ok = Phoenix.PubSub.unsubscribe(ExChatOtp.PubSub, channel_name(channel_id))
   end
 
   defp attempt_async(state, func) do
@@ -96,15 +93,6 @@ defmodule ExChatOtp.ChannelServer do
   def crash(channel_id), do: GenServer.cast(via_tuple(channel_id), :raise)
 
   # Callbacks
-
-  @impl true
-  def init(channel_id) when is_integer(channel_id) do
-    Logger.info("Starting #{channel_id}")
-    channel = Channels.get_channel(channel_id)
-    state = %{channel: channel}
-
-    {:ok, state}
-  end
 
   @impl true
   def handle_call({:is_member, user_id}, _from, state) do

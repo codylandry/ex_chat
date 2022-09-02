@@ -53,7 +53,7 @@ body {
     display: flex;
     flex-flow: column-reverse;
     max-height: calc(var(--app-height) - var(--compose-height));
-    overflow: scroll;
+    overflow-y: auto;
 }
 
 .app__main__post {
