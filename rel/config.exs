@@ -55,4 +55,3 @@ release :ex_chat do
     ex_chat_web: :permanent
   ]
 end
-
