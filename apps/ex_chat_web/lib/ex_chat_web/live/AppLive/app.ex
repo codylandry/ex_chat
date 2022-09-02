@@ -1,7 +1,7 @@
 defmodule ExChatWeb.Live.App do
   use ExChatWeb, :live_view
   alias ExChatOtp.{ChannelServer, ChannelSupervisor}
-  alias ExChatDal.Channels
+  alias ExChatDal.{Channels, Accounts}
   require Logger
 
   @impl true
@@ -29,7 +29,14 @@ defmodule ExChatWeb.Live.App do
         ChannelServer.subscribe(channel_id)
         channel = ChannelServer.get_channel(channel_id)
 
-        assign(socket, :channel, channel)
+        socket
+        |> assign(:posts, channel.posts)
+        |> assign(:members, channel.members)
+        |> assign(:channel, channel)
+        |> assign(
+          :unjoined_channels,
+          difference_by(socket.assigns.channels, socket.assigns.current_user.channels, & &1.id)
+        )
       else
         socket
       end
@@ -79,30 +86,64 @@ defmodule ExChatWeb.Live.App do
   end
 
   @impl true
-  def handle_info([event: :refresh, channel: channel], socket) do
-    {:noreply, push_patch(socket, to: "/app/#{channel.id}")}
+  def handle_info([event: :refresh, channel: channel, channel_id: channel_id], socket) do
+    if channel_id == socket.assigns.channel.id do
+      {:noreply, push_patch(socket, to: "/app/#{channel.id}")}
+    else
+      {:noreply, socket}
+    end
   end
 
   @impl true
-  def handle_info([event: :add_member, member: member], socket) do
+  def handle_info([event: :member_added, member: member, channel_id: channel_id], socket) do
     members = [member | socket.assigns.channel.members]
-    {:noreply, assign_channel(socket, :members, members)}
+
+    socket =
+      if channel_id == socket.channel.id do
+        socket
+        |> assign(:members, members)
+
+        # |> assign_channel(:members, members)
+      else
+        socket
+      end
+      |> assign(:current_user, Accounts.get_user!(socket.current_user.id))
+
+    {:noreply, socket}
   end
 
   @impl true
-  def handle_info([event: :remove_member, member: member], socket) do
+  def handle_info([event: :member_removed, member: member, channel_id: channel_id], socket) do
     members = Enum.filter(socket.assigns.channel.members, fn m -> m.id != member.id end)
-    {:noreply, assign_channel(socket, :members, members)}
+
+    socket =
+      if channel_id == socket.channel.id do
+        socket
+        |> assign(:members, members)
+
+        # |> assign_channel(:members, members)
+      else
+        socket
+      end
+      |> assign(:current_user, Accounts.get_user!(socket.current_user.id))
+
+    {:noreply, socket}
   end
 
   @impl true
-  def handle_info([event: :add_post, post: post], socket) do
-    if post.channel_id == socket.assigns.channel.id do
+  def handle_info([event: :post_added, post: post, channel_id: channel_id], socket) do
+    if channel_id == socket.assigns.channel.id do
       posts =
         [post | socket.assigns.channel.posts]
         |> Enum.dedup_by(fn p -> p.id end)
 
-      {:noreply, assign_channel(socket, :posts, posts)}
+      socket =
+        socket
+        |> assign(:posts, posts)
+
+      # |> assign_channel(:posts, posts)
+
+      {:noreply, socket}
     else
       # a post from another channel
       if ChannelServer.is_member?(post.channel_id, socket.assigns.current_user.id) do
@@ -119,19 +160,25 @@ defmodule ExChatWeb.Live.App do
   end
 
   @impl true
-  def handle_info([event: :remove_post, post: post], socket) do
+  def handle_info([event: :post_removed, post: post, channel_id: channel_id], socket) do
     posts = Enum.filter(socket.assigns.channel.posts, fn m -> m.id != post.id end)
-    {:noreply, assign_channel(socket, :posts, posts)}
+
+    socket =
+      if channel_id == socket.channel.id do
+        socket
+        |> assign(:posts, posts)
+
+        # |> assign_channel(:posts, posts)
+      end
+
+    {:noreply, socket}
   end
 
   @impl true
   def handle_info([event: :channel_removed, channel_id: channel_id], socket) do
     socket =
-      assign(
-        socket,
-        :channels,
-        Enum.filter(socket.assigns.channels, fn c -> c.id != channel_id end)
-      )
+      socket
+      |> update_channels(Enum.filter(socket.assigns.channels, fn c -> c.id != channel_id end))
 
     {:noreply, socket}
   end
@@ -139,17 +186,27 @@ defmodule ExChatWeb.Live.App do
   @impl true
   def handle_info([event: :channel_added, channel: channel], socket) do
     socket =
-      assign(
-        socket,
-        :channels,
-        [channel | socket.assigns.channels]
-      )
+      socket
+      |> update_channels([channel | socket.assigns.channels])
 
     {:noreply, socket}
   end
 
-  defp assign_channel(socket, prop, value) do
-    channel = Map.put(socket.assigns.channel, prop, value)
-    assign(socket, :channel, channel)
+  # defp assign_channel(socket, prop, value) do
+  #   channel = Map.put(socket.assigns.channel, prop, value)
+  #   assign(socket, :channel, channel)
+  # end
+
+  def update_channels(socket, new_channels) do
+    socket
+    |> assign(:channels, new_channels)
+    |> assign(
+      :unjoined_channels,
+      difference_by(
+        socket.assigns.channels,
+        socket.assigns.current_user.channels,
+        & &1.id
+      )
+    )
   end
 end

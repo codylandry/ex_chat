@@ -42,6 +42,24 @@ Hooks.PostContainerScrollHandler = {
     }
 }
 
+Hooks.PostEditor = {
+    mounted() {
+        const submitBtn = document.getElementById('post-form-submit')
+        this.el.addEventListener("keydown", event => {
+            if (event.key == "Enter" && event.metaKey) {
+                submitBtn.click()
+            }
+        })
+
+        const form = document.getElementById('post-form')
+        form.addEventListener("submit", event => {
+            setTimeout(() => {
+                this.el.value = ""
+            })
+        })
+    }
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {
     hooks: Hooks,
     params: { _csrf_token: csrfToken },

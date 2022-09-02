@@ -61,11 +61,11 @@ defmodule ExChatOtp.ChannelServer do
   end
 
   def add_member(channel_id, user_id) do
-    GenServer.cast(via_tuple(channel_id), {:add_member, user_id})
+    GenServer.cast(via_tuple(channel_id), {:member_added, user_id})
   end
 
   def remove_member(channel_id, user_id) do
-    GenServer.cast(via_tuple(channel_id), {:remove_member, user_id})
+    GenServer.cast(via_tuple(channel_id), {:member_removed, user_id})
   end
 
   def is_member?(channel_id, user_id) do
@@ -73,11 +73,11 @@ defmodule ExChatOtp.ChannelServer do
   end
 
   def add_post(channel_id, post) do
-    GenServer.cast(via_tuple(channel_id), {:add_post, post})
+    GenServer.cast(via_tuple(channel_id), {:post_added, post})
   end
 
   def remove_post(channel_id, post_id) do
-    GenServer.cast(via_tuple(channel_id), {:remove_post, post_id})
+    GenServer.cast(via_tuple(channel_id), {:post_removed, post_id})
   end
 
   def refresh_state(channel_id) do
@@ -120,16 +120,17 @@ defmodule ExChatOtp.ChannelServer do
     channel = Channels.get_channel(state.channel.id)
     state = %{channel: channel}
 
-    broadcast_channel_event(state.channel.id,
+    ExChatOtp.broadcast_event(
       event: :refresh,
-      channel: state.channel
+      channel: state.channel,
+      channel_id: state.channel.id
     )
 
     {:noreply, state}
   end
 
   @impl true
-  def handle_cast({:add_member, user_id}, state) do
+  def handle_cast({:member_added, user_id}, state) do
     attempt_async(state, fn ->
       Channels.add_member(state.channel.id, user_id)
     end)
@@ -137,16 +138,17 @@ defmodule ExChatOtp.ChannelServer do
     user = Accounts.get_user!(user_id)
     state = %{state | channel: Channel.add_member(state.channel, user)}
 
-    broadcast_channel_event(state.channel.id,
-      event: :add_member,
-      member: user
+    ExChatOtp.broadcast_event(
+      event: :member_added,
+      member: user,
+      channel_id: state.channel.id
     )
 
     {:noreply, state}
   end
 
   @impl true
-  def handle_cast({:remove_member, user_id}, state) do
+  def handle_cast({:member_removed, user_id}, state) do
     member = Enum.find(state.channel.members, fn m -> m.id == user_id end)
 
     attempt_async(state, fn ->
@@ -155,8 +157,9 @@ defmodule ExChatOtp.ChannelServer do
 
     state = %{state | channel: Channel.remove_member(state.channel, user_id)}
 
-    broadcast_channel_event(state.channel.id,
-      event: :remove_member,
+    ExChatOtp.broadcast_event(
+      event: :member_removed,
+      channel_id: state.channel.id,
       member: member
     )
 
@@ -164,19 +167,20 @@ defmodule ExChatOtp.ChannelServer do
   end
 
   @impl true
-  def handle_cast({:add_post, post_attrs}, state) do
+  def handle_cast({:post_added, post_attrs}, state) do
     post_attrs = Map.put(post_attrs, :channel_id, state.channel.id)
 
     post = Posts.create_post(state.channel.id, post_attrs)
 
-    broadcast_channel_event(state.channel.id,
-      event: :add_post,
-      post: post
-    )
+    # broadcast_channel_event(state.channel.id,
+    #   event: :post_added,
+    #   post: post
+    # )
 
     ExChatOtp.broadcast_event(
-      event: :add_post,
-      post: post
+      event: :post_added,
+      post: post,
+      channel_id: state.channel.id
     )
 
     channel = Channel.add_post(state.channel, post)
@@ -186,7 +190,7 @@ defmodule ExChatOtp.ChannelServer do
   end
 
   @impl true
-  def handle_cast({:remove_post, post_id}, state) do
+  def handle_cast({:post_removed, post_id}, state) do
     post = Enum.find(state.channel.posts, fn p -> p.id == post_id end)
 
     IO.inspect(post, label: "post")
@@ -198,10 +202,10 @@ defmodule ExChatOtp.ChannelServer do
     channel = Channel.remove_post(state.channel, post_id)
     state = %{state | channel: channel}
 
-    broadcast_channel_event(state.channel.id,
-      event: :remove_post,
-      post: post
-    )
+    # broadcast_channel_event(state.channel.id,
+    #   event: :post_removed,
+    #   post: post
+    # )
 
     {:noreply, state}
   end

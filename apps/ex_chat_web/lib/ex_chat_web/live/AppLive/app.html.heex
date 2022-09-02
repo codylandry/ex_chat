@@ -29,87 +29,43 @@
   <div class="app__sidebar">
     <ul class="menu bg-base-100 w-full">
     <%= for channel <- @current_user.channels do %>
-      <li class="group">
-
-        <%= live_patch channel.name, to: Routes.live_path(@socket, ExChatWeb.Live.App, channel.id), class: if channel.id == @channel.id, do: "active" %>
-
-        <span class="dropdown dropdown-end absolute right-0 top-0 p-0 h-full">
-          <button class="opacity-0 group-hover:opacity-100">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
-          </button>
-          <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-52">
-            <%= if ChannelServer.is_member?(channel.id, @current_user.id) do %>
-              <li><a phx-click="leave-channel" phx-value-channel_id={channel.id}>Leave</a></li>
-            <% else %>
-              <li><a phx-click="join-channel" phx-value-channel_id={channel.id}>Join</a></li>
-            <% end %>
-          </ul>
-        </span>
-      </li>
+      <.channel_row channel={channel} 
+                        is_current_channel={channel.id == @channel.id} 
+                        user_is_member={true}
+                        socket={@socket}/>
     <% end %>
     </ul>
 
-    <div x-data="{ show: false }" class="p-2">
-      <button @click="show = !show" @click.away="show = false" class="btn bg-transparent border-0 hover:btn-primary mx-auto block">Other Channels</button>
-      <ul x-show="show" class="menu bg-base-100 w-full">
-        <%= for channel <- Enum.filter(@channels, fn c -> !Enum.find_value(@current_user.channels, fn cc -> cc.id == c.id end) end) do %>
-          <li class="group">
-            <%= live_patch channel.name, to: Routes.live_path(@socket, ExChatWeb.Live.App, channel.id), class: if channel.id == @channel.id, do: "active" %>
-            <span class="dropdown dropdown-end absolute right-0 top-0 p-0 h-full">
-              <button class="opacity-0 group-hover:opacity-100">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
-              </button>
-              <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-52">
-                <li><a phx-click="leave-channel" phx-value-channel_id={channel.id}>Leave</a></li>
-              </ul>
-            </span>
-          </li>
-        <% end %>
-        </ul>
-    </div>
+   
 
+  <div class="collapse">
+    <input type="checkbox" /> 
+    <button class="collapse-title text-sm btn bg-transparent border-0 hover:btn-primary mx-auto block">MORE</button>
+    <ul class="collapse-content menu bg-base-100 w-full"> 
+      <%= for channel <- @unjoined_channels do %>
+      <.channel_row channel={channel} 
+                    is_current_channel={channel.id == @channel.id} 
+                    user_is_member={false}
+                    socket={@socket}/>
+    <% end %>
+    </ul>
+  </div>
+
+    
     <div class="mx-auto mt-auto block" x-data="{show: false}" @click.away="show = false" >
       <form x-show="show" class="mx-auto block p-3 bg-base-300 shadow rounded-box" phx-submit="create-channel">
         <div class="form-control">
           <input class="input input-bordered input-primary w-full" placeholder="channel name..." name="channel_name">
-          <button action="submit">Do it</button>
+          <button action="submit" class="btn btn-secondary btn-sm">OK</button>
         </div>
       </form>
       <button @click="show = true" class="btn bg-transparent border-0 hover:btn-primary mx-auto block">Add Channel</button>
     </div>
-
-
-<!--
-    <h2>Members</h2>
-    <div>
-      <%= for member <- @channel.members do %>
-        <div>
-          <%= member.email %>
-        </div>
-      <% end %>
-    </div>
--->
+    
   </div>
 
   <div class="app__main" id="posts-container" phx-hook="PostContainerScrollHandler">
-    <%= for post <- Enum.sort_by(@channel.posts, &(&1.inserted_at), {:desc, Date}) do %>
-      <!--<div class="app__main__post group">
-        <div class="app__main__post__email"><%= post.author.email %></div>
-        <div class="app__main__post__content"><%= post.content %></div>
-        <%= if post.author.id == @current_user.id do %>
-          <span class="app__main__post__options dropdown dropdown-left">
-            <button class="opacity-0 group-hover:opacity-100">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
-            </button>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-52 z-10">
-              <li><a phx-click="remove-post" 
-                  phx-value-post_id={post.id}>Delete</a></li>
-            </ul>
-          </span>
-
-        <% end %>
-      </div>-->
-
+    <%= for post <- Enum.sort_by(@posts, &(&1.inserted_at), {:desc, Date}) do %>
       <.post post={post} current_user={@current_user}></.post>
     <% end %>
   </div>
@@ -117,8 +73,8 @@
   <div class="app__compose z-0">
     <form phx-submit="add-post" id="post-form">
       <%# <input name="content"> %>
-      <textarea class="app__compose__textarea" id="post-editor" name="content" resize="off"></textarea>
-      <button action="submit" id="post-form-submit"></button>
+      <textarea class="app__compose__textarea" id="post-editor" name="content" resize="off" phx-hook="PostEditor" ></textarea>
+      <button class="btn bg-transparent border-0 hover:btn-primary absolute bottom-0 right-1" action="submit" id="post-form-submit">SEND</button>
     </form>
   </div>
 </div>

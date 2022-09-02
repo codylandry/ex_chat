@@ -1,8 +1,8 @@
 defmodule ExChatWeb.LiveHelpers do
   import Phoenix.LiveView
   import Phoenix.LiveView.Helpers
-
   alias Phoenix.LiveView.JS
+  alias ExChatWeb.Router.Helpers, as: Routes
 
   @doc """
   Renders a live component inside a modal.
@@ -71,6 +71,33 @@ defmodule ExChatWeb.LiveHelpers do
       <% end %>
     </div>
     """
+  end
+
+  def channel_row(assigns) do
+    ~H"""
+    <li class="group">
+      <% cls = if @is_current_channel, do: "active", else: ""  %>
+      <%= live_patch @channel.name, to: Routes.live_path(@socket, ExChatWeb.Live.App, @channel.id), class: cls <> " p-1"  %>
+      <span class="dropdown dropdown-end absolute right-0 top-0 p-0 h-full">
+        <button class="opacity-0 group-hover:opacity-100">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
+        </button>
+        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box">
+          <%= if @user_is_member do %>
+            <li><a phx-click="leave-channel" phx-value-channel_id={@channel.id}>Leave</a></li>
+          <% else %>
+            <li><a phx-click="join-channel" phx-value-channel_id={@channel.id}>Join</a></li>
+          <% end %>
+        </ul>
+      </span>
+    </li>
+    """
+  end
+
+  def difference_by(list1, list2, fun) do
+    Enum.filter(list1, fn i ->
+      !Enum.find_value(list2, fn g -> fun.(g) == fun.(i) end)
+    end)
   end
 
   defp hide_modal(js \\ %JS{}) do
