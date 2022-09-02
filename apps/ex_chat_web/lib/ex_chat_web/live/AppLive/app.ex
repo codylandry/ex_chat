@@ -38,14 +38,14 @@ defmodule ExChatWeb.Live.App do
   end
 
   @impl true
-  def handle_event("leave-channel", _params, socket) do
-    ChannelServer.remove_member(socket.assigns.channel.id, socket.assigns.current_user.id)
+  def handle_event("leave-channel", %{"channel_id" => channel_id}, socket) do
+    ChannelServer.remove_member(channel_id, socket.assigns.current_user.id)
     {:noreply, socket}
   end
 
   @impl true
-  def handle_event("join-channel", _params, socket) do
-    ChannelServer.add_member(socket.assigns.channel.id, socket.assigns.current_user.id)
+  def handle_event("join-channel", %{"channel_id" => channel_id}, socket) do
+    ChannelServer.add_member(channel_id, socket.assigns.current_user.id)
     {:noreply, socket}
   end
 
@@ -58,7 +58,7 @@ defmodule ExChatWeb.Live.App do
 
     ChannelServer.add_post(socket.assigns.channel.id, post)
 
-    {:noreply, socket}
+    {:noreply, push_event(socket, "post-added", %{})}
   end
 
   @impl true
@@ -70,7 +70,11 @@ defmodule ExChatWeb.Live.App do
   @impl true
   def handle_event("create-channel", %{"channel_name" => channel_name}, socket) do
     channel = ChannelSupervisor.add_channel(channel_name)
-    socket = assign(socket, :channels, [channel | socket.assigns.channels])
+
+    socket =
+      socket
+      |> push_patch(to: "/app/#{channel.id}")
+
     {:noreply, socket}
   end
 
@@ -82,17 +86,13 @@ defmodule ExChatWeb.Live.App do
   @impl true
   def handle_info([event: :add_member, member: member], socket) do
     members = [member | socket.assigns.channel.members]
-    channel = Map.put(socket.assigns.channel, :members, members)
-    socket = assign(socket, :channel, channel)
-    {:noreply, socket}
+    {:noreply, assign_channel(socket, :members, members)}
   end
 
   @impl true
   def handle_info([event: :remove_member, member: member], socket) do
     members = Enum.filter(socket.assigns.channel.members, fn m -> m.id != member.id end)
-    channel = Map.put(socket.assigns.channel, :members, members)
-    socket = assign(socket, :channel, channel)
-    {:noreply, socket}
+    {:noreply, assign_channel(socket, :members, members)}
   end
 
   @impl true
@@ -102,27 +102,26 @@ defmodule ExChatWeb.Live.App do
         [post | socket.assigns.channel.posts]
         |> Enum.dedup_by(fn p -> p.id end)
 
-      channel = Map.put(socket.assigns.channel, :posts, posts)
-      socket = assign(socket, :channel, channel)
-      {:noreply, socket}
+      {:noreply, assign_channel(socket, :posts, posts)}
     else
-      IO.inspect(post, label: "post from another page")
+      # a post from another channel
+      if ChannelServer.is_member?(post.channel_id, socket.assigns.current_user.id) do
+        channel = ChannelServer.get_channel(post.channel_id)
 
-      {:noreply,
-       put_flash(
-         socket,
-         :info,
-         "#{post.author.email} sent a new message in #{post.channel.name}<br>#{post.content}"
-       )}
+        {:noreply,
+         put_flash(
+           socket,
+           :new_post,
+           %{post: post, channel: channel}
+         )}
+      end
     end
   end
 
   @impl true
   def handle_info([event: :remove_post, post: post], socket) do
     posts = Enum.filter(socket.assigns.channel.posts, fn m -> m.id != post.id end)
-    channel = Map.put(socket.assigns.channel, :posts, posts)
-    socket = assign(socket, :channel, channel)
-    {:noreply, socket}
+    {:noreply, assign_channel(socket, :posts, posts)}
   end
 
   @impl true
@@ -147,5 +146,10 @@ defmodule ExChatWeb.Live.App do
       )
 
     {:noreply, socket}
+  end
+
+  defp assign_channel(socket, prop, value) do
+    channel = Map.put(socket.assigns.channel, prop, value)
+    assign(socket, :channel, channel)
   end
 end

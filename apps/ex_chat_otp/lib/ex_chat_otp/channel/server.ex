@@ -108,8 +108,7 @@ defmodule ExChatOtp.ChannelServer do
 
   @impl true
   def handle_call({:is_member, user_id}, _from, state) do
-    state = %{state | channel: Channel.is_member?(state.channel, user_id)}
-    {:reply, state.channel, state}
+    {:reply, Channel.is_member?(state.channel, user_id), state}
   end
 
   @impl true

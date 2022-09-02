@@ -2,37 +2,91 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+body {
+    --nav-bar-height: 64px;
+}
 
 .app {
-    height: 100vh;
+    --app-height: calc(100vh - var(--nav-bar-height));
+    --compose-height: 100px;
+    height: var(--app-height);
     width: 100vw;
     display: grid;
-    grid-template-columns: minmax(60px, 20%) 1fr;
-    grid-template-rows: 1fr 50px;
+    grid-template-columns: minmax(180px, 20%) 1fr;
+    grid-template-rows: 1fr var(--compose-height);
     grid-template-areas:
         "sidebar  main"
         "sidebar  compose";
     overflow: hidden;
 }
 
+.app__alert--info {
+    @apply alert alert-info;
+    display: block;
+}
+
+.app__alert--error {
+    @apply alert alert-error;
+    display: block;
+}
+
+.app__notifications {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: fit-content;
+}
+
 .app__sidebar {
     grid-area: sidebar;
-    border-right: 1px solid black;
-    padding: 5px
+    /* border-right: 1px solid black; */
+    padding: 5px;
+    height: var(--app-height);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .app__main {
     grid-area: main;
     padding: 5px;
     display: flex;
-    flex-flow: column;
-    margin-top: auto;
+    flex-flow: column-reverse;
+    max-height: calc(var(--app-height) - var(--compose-height));
     overflow: scroll;
-    max-height: calc(100vh - 50px);
+}
+
+.app__main__post {
+    display: grid;
+    grid-template-rows: 18px 1fr;
+    grid-template-columns: 1fr 1fr 20px;
+    grid-template-areas:
+        "email      email       options"
+        "content    content     content"
+
+}
+
+.app__main__post__email {
+    grid-area: email;
+}
+
+.app__main__post__content {
+    grid-area: content;
+}
+
+.app__main__post__options {
+    margin-left: auto;
+    grid-area: options;
 }
 
 .app__compose {
     grid-area: compose;
-    padding: 5px;
-    border-top: 1px solid black;
+    padding: 0px;
+    /* border-top: 1px solid black; */
+}
+
+.app__compose__textarea {
+    @apply textarea textarea-bordered textarea-primary h-full w-full;
+    resize: none;
+    height: 100px;
 }

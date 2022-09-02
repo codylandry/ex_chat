@@ -52,6 +52,27 @@ defmodule ExChatWeb.LiveHelpers do
     """
   end
 
+  def post(assigns) do
+    ~H"""
+    <div class="app__main__post group mb-5 first-of-type:mb-0">
+      <div class="app__main__post__email text-sm text-accent"><%= @post.author.email %></div>
+      <div class="app__main__post__content text-md"><%= @post.content %></div>
+      <%= if @post.author.id == @current_user.id do %>
+        <span class="app__main__post__options dropdown dropdown-left">
+          <button class="opacity-0 group-hover:opacity-100">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
+          </button>
+          <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-52 z-10">
+            <li><a phx-click="remove-post"
+                phx-value-post_id={@post.id}>Delete</a></li>
+          </ul>
+        </span>
+
+      <% end %>
+    </div>
+    """
+  end
+
   defp hide_modal(js \\ %JS{}) do
     js
     |> JS.hide(to: "#modal", transition: "fade-out")
