@@ -11,17 +11,16 @@ defmodule ExChatOtp.ChannelSupervisor do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
+  def add_channel(channel_arg, creator_id \\ nil)
+
   # Start a Player process and add it to supervision
-  def add_channel(channel_id) when is_integer(channel_id) do
-    DynamicSupervisor.start_child(__MODULE__, ChannelServer.child_spec(channel_id))
-    channel = ChannelServer.get_channel(channel_id)
-    ExChatOtp.broadcast_event([event: :channel_added, channel: channel])
-    channel
+  def add_channel(channel_id, creator_id) when is_integer(channel_id) do
+    DynamicSupervisor.start_child(__MODULE__, ChannelServer.child_spec(channel_id, creator_id))
   end
 
-  def add_channel(channel_name) when is_binary(channel_name) do
+  def add_channel(channel_name, creator_id) when is_binary(channel_name) do
     {:ok, channel} = Channels.create_channel(%{name: channel_name})
-    add_channel(channel.id)
+    add_channel(channel.id, creator_id)
   end
 
   # Terminate a Player process and remove it from supervision

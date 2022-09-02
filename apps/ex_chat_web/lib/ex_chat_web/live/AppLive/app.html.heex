@@ -19,8 +19,8 @@
       <div class="app__alert--info" role="alert"
         phx-click="lv:clear-flash"
         phx-value-key="new_post">
-        <% %{post: post, channel: channel} = toast %>
-        <div>New Message from: <strong><%= post.author.email %></strong> in <strong><%= channel.name %></strong></div>
+        <% %{post: post, channel_name: channel_name} = toast %>
+        <div>New Message from: <strong><%= post.author.email %></strong> in <strong><%= channel_name %></strong></div>
         <div><%= post.content %></div>
       </div>
     <% end %>
@@ -39,7 +39,7 @@
    
   <div class="collapse">
     <input type="checkbox" /> 
-    <button class="collapse-title text-sm btn bg-transparent border-0 hover:btn-primary mx-auto block">MORE</button>
+    <button class="collapse-title text-sm btn bg-transparent border-0 hover:btn-primary mx-auto block text-base-content">MORE</button>
     <ul class="collapse-content menu bg-base-100 w-full"> 
       <%= for channel <- @unjoined_channels do %>
       <.channel_row channel={channel} 
@@ -58,29 +58,35 @@
           <button action="submit" class="btn btn-secondary btn-sm">OK</button>
         </div>
       </form>
-      <button @click="show = true" class="btn bg-transparent border-0 hover:btn-primary mx-auto block">Add Channel</button>
+      <button @click="show = true" class="btn bg-transparent border-0 hover:btn-primary mx-auto block text-base-content">Add Channel</button>
     </div>
     
   </div>
 
-  <div class="app__main" id="posts-container" phx-hook="PostContainerScrollHandler">
-    <%= if length(@posts) == 0 do %>
-      <span>Looks like you're the first one here. </span>
-    <% end %>
-    <%= for post <- Enum.sort_by(@posts, &(&1.inserted_at), {:desc, Date}) do %>
-      <.post post={post} current_user={@current_user}></.post>
-    <% end %>
-  </div>
+  <%= if @channel.id do %>
+    <div class="app__main" id="posts-container" phx-hook="PostContainerScrollHandler">
+      <%= if length(@posts) == 0 do %>
+        <span>Looks like you're the first one here.</span>
+      <% end %>
+      <%= for post <- Enum.sort_by(@posts, &(&1.inserted_at), {:desc, Date}) do %>
+        <.post post={post} current_user={@current_user}></.post>
+      <% end %>
+    </div>
 
-  <div class="app__compose z-0">
-    <form phx-submit="add-post" id="post-form">
-      <%# <input name="content"> %>
-      <textarea class="app__compose__textarea" id="post-editor" name="content" resize="off" phx-hook="PostEditor" placeholder="Type a message.  Cmd-Enter to send or click the send icon." ></textarea>
-      <button class="btn bg-transparent border-0 hover:btn-primary absolute bottom-1 right-1 text-accent" action="submit" id="post-form-submit">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-        </svg>
-      </button>
-    </form>
-  </div>
+    <div class="app__compose z-0">
+      <form phx-submit="add-post" id="post-form">
+        <%# <input name="content"> %>
+        <textarea class="app__compose__textarea" id="post-editor" name="content" resize="off" phx-hook="PostEditor" placeholder="Type a message.  Cmd-Enter to send or click the send icon." ></textarea>
+        <button class="btn bg-transparent border-0 hover:btn-primary absolute bottom-1 right-1 text-accent" action="submit" id="post-form-submit">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+          </svg>
+        </button>
+      </form>
+    </div>
+  <% else %>
+    <div class="flex items-center justify-center">
+      <span>Select a channel</span>
+    </div>
+  <% end %>
 </div>

@@ -69,7 +69,9 @@ defmodule ExChatDal.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) do
+    Repo.one!(from(u in User, where: u.id == ^id, preload: :channels))
+  end
 
   ## User registration
 
@@ -247,7 +249,11 @@ defmodule ExChatDal.Accounts do
       query
       |> Repo.one()
 
-    Map.put(user, :channels, list_channels_by_member_id(user.id))
+    if user do
+      Map.put(user, :channels, list_channels_by_member_id(user.id))
+    else
+      user
+    end
   end
 
   @doc """

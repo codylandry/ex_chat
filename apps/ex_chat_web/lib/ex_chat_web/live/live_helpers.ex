@@ -77,7 +77,7 @@ defmodule ExChatWeb.LiveHelpers do
     ~H"""
     <li class="group">
       <% cls = if @is_current_channel, do: "active", else: ""  %>
-      <%= live_patch @channel.name, to: Routes.live_path(@socket, ExChatWeb.Live.App, @channel.id), class: cls <> " p-1"  %>
+      <%= live_patch @channel.name, to: Routes.live_path(@socket, ExChatWeb.Live.App, @channel.id), class: cls <> " p-1 text-base-content"  %>
       <span class="dropdown dropdown-end absolute right-0 top-0 p-0 h-full">
         <button class="opacity-0 group-hover:opacity-100">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
@@ -92,6 +92,14 @@ defmodule ExChatWeb.LiveHelpers do
       </span>
     </li>
     """
+  end
+
+  def is_current_channel(channel, current_channel) do
+    if !current_channel do
+      false
+    else
+      channel.id == current_channel.id
+    end
   end
 
   def difference_by(list1, list2, fun) do

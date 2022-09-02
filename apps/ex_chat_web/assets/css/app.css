@@ -6,6 +6,10 @@ body {
     --nav-bar-height: 64px;
 }
 
+.navbar__title {
+    text-shadow: 0 0 8px #6518e7;
+}
+
 .app {
     --app-height: calc(100vh - var(--nav-bar-height));
     --compose-height: 100px;
@@ -40,8 +44,9 @@ body {
 .app__sidebar {
     grid-area: sidebar;
     /* border-right: 1px solid black; */
-    padding: 5px;
     height: var(--app-height);
+    margin-right: 5px;
+    box-shadow: 5px 0 44px -28px black;
     overflow: auto;
     display: flex;
     flex-direction: column;
@@ -89,4 +94,5 @@ body {
     @apply textarea textarea-bordered textarea-primary h-full w-full;
     resize: none;
     height: 100px;
+    box-shadow: 0 0 20px -13px black;
 }

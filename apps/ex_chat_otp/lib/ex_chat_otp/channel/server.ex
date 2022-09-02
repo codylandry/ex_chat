@@ -15,15 +15,22 @@ defmodule ExChatOtp.ChannelServer do
 
   require Logger
 
-  def start_link(channel_id) when is_integer(channel_id) do
-    GenServer.start_link(__MODULE__, channel_id, name: via_tuple(channel_id))
+  def start_link(channel_id, creator_id \\ nil) when is_integer(channel_id) do
+    GenServer.start_link(__MODULE__, [channel_id, creator_id], name: via_tuple(channel_id))
   end
 
   @impl true
-  def init(channel_id) when is_integer(channel_id) do
-    Logger.info("Starting #{channel_id}")
+  def init([channel_id, creator_id]) when is_integer(channel_id) do
+    Logger.info("Starting #{channel_id} created by #{creator_id}")
+
+    if creator_id do
+      add_member(channel_id, creator_id)
+    end
+
     channel = Channels.get_channel(channel_id)
     state = %{channel: channel}
+
+    ExChatOtp.broadcast_event(event: :channel_added, channel: channel, creator_id: creator_id)
 
     {:ok, state}
   end
@@ -33,10 +40,10 @@ defmodule ExChatOtp.ChannelServer do
 
   def channel_name(channel_id), do: "channel:#{channel_id}"
 
-  def child_spec(channel_id) do
+  def child_spec(channel_id, creator_id) do
     %{
       id: channel_name(channel_id),
-      start: {__MODULE__, :start_link, [channel_id]},
+      start: {__MODULE__, :start_link, [channel_id, creator_id]},
       restart: :transient
     }
   end
@@ -160,15 +167,11 @@ defmodule ExChatOtp.ChannelServer do
 
     post = Posts.create_post(state.channel.id, post_attrs)
 
-    # broadcast_channel_event(state.channel.id,
-    #   event: :post_added,
-    #   post: post
-    # )
-
     ExChatOtp.broadcast_event(
       event: :post_added,
       post: post,
-      channel_id: state.channel.id
+      channel_id: state.channel.id,
+      channel_name: state.channel.name
     )
 
     channel = Channel.add_post(state.channel, post)
@@ -181,8 +184,6 @@ defmodule ExChatOtp.ChannelServer do
   def handle_cast({:post_removed, post_id}, state) do
     post = Enum.find(state.channel.posts, fn p -> p.id == post_id end)
 
-    IO.inspect(post, label: "post")
-
     attempt_async(state, fn ->
       Posts.delete_post(post_id)
     end)
@@ -190,10 +191,11 @@ defmodule ExChatOtp.ChannelServer do
     channel = Channel.remove_post(state.channel, post_id)
     state = %{state | channel: channel}
 
-    # broadcast_channel_event(state.channel.id,
-    #   event: :post_removed,
-    #   post: post
-    # )
+    ExChatOtp.broadcast_event(
+      event: :post_removed,
+      post: post,
+      channel_id: state.channel.id
+    )
 
     {:noreply, state}
   end
