@@ -46,14 +46,18 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :tailwind, version: "3.1.8", default: [
-  args: ~w(
+config :tailwind,
+  version: "3.1.8",
+  default: [
+    args: ~w(
     --config=tailwind.config.js
     --input=css/app.css
     --output=../priv/static/assets/app.css
   ),
-  cd: Path.expand("../apps/ex_chat_web/assets", __DIR__)
-]
+    cd: Path.expand("../apps/ex_chat_web/assets", __DIR__)
+  ]
+
+config :ex_chat_dal, ExChatDal.Mailer, adapter: Swoosh.Adapters.Sendinblue
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

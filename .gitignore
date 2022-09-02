@@ -39,3 +39,5 @@ config/*.secret.*
 
 # OS X specific
 .DS_Store
+
+config/*.secrets.exs

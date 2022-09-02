@@ -22,9 +22,10 @@ defmodule ExChatWeb.UserRegistrationController do
         conn
         |> put_flash(:info, "User created successfully.")
         |> UserAuth.log_in_user(user)
+        |> dbg()
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        dbg(render(conn, "new.html", changeset: changeset))
     end
   end
 end

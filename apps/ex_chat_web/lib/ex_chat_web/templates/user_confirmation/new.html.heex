@@ -1,15 +1,25 @@
-<h1>Resend confirmation instructions</h1>
+<div class="accounts-page">
+  <div class="accounts-page-form__container">
+    <h1 class="text-3xl text-accent">Settings</h1>
+      <h3 class="text-2xl">Resend confirmation instructions</h3>
 
-<.form let={f} for={:user} action={Routes.user_confirmation_path(@conn, :create)}>
-  <%= label f, :email %>
-  <%= email_input f, :email, required: true %>
+      <.form let={f} for={:user} action={Routes.user_confirmation_path(@conn, :create)}>
+        <div class="form-control w-full">
+          <%= label f, :email, class: "label" %>
+          <%= email_input f, :email, required: true, class: "input input-bordered w-full" %>
+          <label class="label">
+            <span class="label-text-alt"><%= error_tag f, :email %></span>
+          </label>
+        </div>
 
-  <div>
-    <%= submit "Resend confirmation instructions" %>
+        <div>
+          <%= submit "Resend confirmation instructions", class: "btn btn-primary" %>
+        </div>
+      </.form>
+
+      <p>
+        <%= link "Register", to: Routes.user_registration_path(@conn, :new) %> |
+        <%= link "Log in", to: Routes.user_session_path(@conn, :new) %>
+      </p>
   </div>
-</.form>
-
-<p>
-  <%= link "Register", to: Routes.user_registration_path(@conn, :new) %> |
-  <%= link "Log in", to: Routes.user_session_path(@conn, :new) %>
-</p>
+</div>

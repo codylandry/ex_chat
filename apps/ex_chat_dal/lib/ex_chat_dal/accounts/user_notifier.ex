@@ -1,22 +1,23 @@
 defmodule ExChatDal.Accounts.UserNotifier do
-#  import Swoosh.Email
-#  alias ExChatDal.Mailer
+  import Swoosh.Email
+  alias ExChatDal.Mailer
 
   require Logger
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
-    Logger.debug("[UserNotifier] deliver(#{recipient}), #{subject}, #{body}")
-#    email =
-#      new()
-#      |> to(recipient)
-#      |> from({"ExChatDal", "contact@example.com"})
-#      |> subject(subject)
-#      |> text_body(body)
-#
-#    with {:ok, _metadata} <- Mailer.deliver(email) do
-#      {:ok, email}
-#    end
+    Logger.info("[UserNotifier] deliver(#{recipient}), #{subject}, #{body}")
+
+    email =
+      new()
+      |> to(recipient)
+      |> from({"ExChatDal", "contact@example.com"})
+      |> subject(subject)
+      |> text_body(body)
+
+    with {:ok, _metadata} <- Mailer.deliver(email) do
+      {:ok, email}
+    end
   end
 
   @doc """

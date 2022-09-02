@@ -4,15 +4,44 @@
 
 body {
     --nav-bar-height: 64px;
+    --app-height: calc(100vh - var(--nav-bar-height));
+    --compose-height: 100px;
 }
+
+.accounts-page {
+    height: var(--app-height);
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.accounts-page-form__container {
+    height: fit-content;
+    max-height: var(--app-height);
+    width: 50%;
+    min-width: 350px;
+    max-width: 100vw;
+    padding: 20px;
+    box-shadow: 0 0px 30px -10px black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.accounts-page-form__container>* {
+    margin-bottom: 15px;
+}
+
 
 .navbar__title {
     text-shadow: 0 0 8px #6518e7;
 }
 
 .app {
-    --app-height: calc(100vh - var(--nav-bar-height));
-    --compose-height: 100px;
     height: var(--app-height);
     width: 100vw;
     display: grid;

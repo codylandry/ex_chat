@@ -8,33 +8,32 @@
     <%= live_title_tag assigns[:page_title] || "ExChat", suffix: " · Phoenix Framework" %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
-
-
   </head>
   <body>
 
     <div class="navbar bg-neutral">
       <div class="flex-1">
-        <a class="btn btn-ghost normal-case text-xl navbar__title text-neutral-content">ExChat</a>
+        <%= link "ExChat", to: Routes.page_path(@conn, :index), class: "btn btn-ghost normal-case text-xl navbar__title text-neutral-content" %>
       </div>
       <div class="flex-none">
         <ul class="menu menu-horizontal p-0">
           <li tabindex="0">
-            <a class="text-neutral-content">
-              <%= @current_user.email %>
-            </a>
-            <ul class="p-2 bg-base-100 shadow-lg">
             <%= if @current_user do %>
-              <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-              <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
-            <% else %>
-              <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-              <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+              <a class="text-neutral-content">
+                <%= @current_user.email %>
+              </a>
+              <ul class="p-2 bg-base-100 shadow-lg">
+                <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
+                <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
+              </ul>
             <% end %>
-            </ul>
 
           </li>
+          <%= if !@current_user do %>
+            <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
+            <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+          <% end %>
+
         </ul>
       </div>
     </div>
