@@ -9,6 +9,7 @@ body {
 }
 
 .accounts-page {
+    @apply bg-neutral;
     height: var(--app-height);
     width: 100vw;
     display: flex;
@@ -18,6 +19,7 @@ body {
 }
 
 .accounts-page-form__container {
+    @apply bg-base-100;
     height: fit-content;
     max-height: var(--app-height);
     width: 50%;

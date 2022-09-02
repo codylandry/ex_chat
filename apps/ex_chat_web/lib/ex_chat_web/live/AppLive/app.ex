@@ -90,10 +90,10 @@ defmodule ExChatWeb.Live.App do
     members = [member | socket.assigns.channel.members]
 
     socket =
-      if channel_id == socket.assigns.channel.id do
+      if member.id == socket.assigns.current_user.id do
         socket
-        |> assign(:members, members)
         |> update_channels(socket.assigns.channels)
+        |> push_patch(to: "/app/#{channel_id}")
       else
         socket
       end
@@ -106,14 +106,21 @@ defmodule ExChatWeb.Live.App do
   def handle_info([event: :member_removed, channel_id: channel_id, member: member], socket) do
     members = Enum.filter(socket.assigns.channel.members, fn m -> m.id != member.id end)
 
+    currently_viewing_channel = channel_id == socket.assigns.channel.id
+    is_current_user = member.id == socket.assigns.current_user.id
+
     socket =
-      if channel_id == socket.assigns.channel.id do
-        socket
-        |> assign(:members, members)
-        |> update_channels(socket.assigns.channels)
-      else
-        socket
+      cond do
+        currently_viewing_channel and is_current_user ->
+          go_to_first_channel(socket)
+
+        currently_viewing_channel ->
+          assign(socket, :members, members)
+
+        true ->
+          socket
       end
+      |> update_channels(socket.assigns.channels)
       |> assign(:current_user, Accounts.get_user!(socket.assigns.current_user.id))
 
     {:noreply, socket}
@@ -179,6 +186,13 @@ defmodule ExChatWeb.Live.App do
       |> update_channels([channel | socket.assigns.channels])
 
     {:noreply, socket}
+  end
+
+  def go_to_first_channel(socket) do
+    first_channel = List.first(socket.assigns.channels)
+
+    socket
+    |> push_patch(to: "/app/#{first_channel.id}")
   end
 
   def update_channels(socket, new_channels) do

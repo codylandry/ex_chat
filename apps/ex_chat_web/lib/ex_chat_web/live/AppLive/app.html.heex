@@ -34,22 +34,16 @@
                         user_is_member={true}
                         socket={@socket}/>
     <% end %>
-    </ul>
 
-   
-  <div class="collapse">
-    <input type="checkbox" /> 
-    <button class="collapse-title text-sm btn bg-transparent border-0 hover:btn-primary mx-auto block text-base-content">MORE</button>
-    <ul class="collapse-content menu bg-base-100 w-full"> 
-      <%= for channel <- @unjoined_channels do %>
+    <hr/>
+
+    <%= for channel <- @unjoined_channels do %>
       <.channel_row channel={channel} 
                     is_current_channel={channel.id == @channel.id} 
                     user_is_member={false}
                     socket={@socket}/>
     <% end %>
     </ul>
-  </div>
-
     
     <div class="mx-auto mt-auto block" x-data="{show: false}" @click.away="show = false" >
       <form x-show="show" class="mx-auto block p-3 bg-base-300 shadow rounded-box" phx-submit="create-channel">
