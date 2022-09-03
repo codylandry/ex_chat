@@ -13,6 +13,9 @@ config :ex_chat_web, ExChatWeb.Endpoint,
 url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
 cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :ex_chat_dal, ExChatDal.Repo,
+  url: System.get_env("DATABASE_URL")
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
