@@ -10,11 +10,12 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :ex_chat_web, ExChatWeb.Endpoint,
-url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
-cache_static_manifest: "priv/static/cache_manifest.json"
+  url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
+  cache_static_manifest: "priv/static/cache_manifest.json"
 
 config :ex_chat_dal, ExChatDal.Repo,
-  url: System.get_env("DATABASE_URL")
+  url: System.get_env("DATABASE_URL"),
+  pool_size: 10
 
 # ## SSL Support
 #
@@ -69,16 +70,16 @@ config :logger, level: :info
 #   ssl: true,
 #   pool_size: 2 # Free tier db only allows 4 connections. Rolling deploys need pool_size*(n+1) connections where n is the number of app replicas.
 
-
 dns_name = System.get_env("RENDER_DISCOVERY_SERVICE")
 app_name = System.get_env("RENDER_SERVICE_NAME")
 
-config :libcluster, topologies: [
-  render: [
-    strategy: Cluster.Strategy.Kubernetes.DNS,
-    config: [
-      service: dns_name,
-      application_name: app_name
+config :libcluster,
+  topologies: [
+    render: [
+      strategy: Cluster.Strategy.Kubernetes.DNS,
+      config: [
+        service: dns_name,
+        application_name: app_name
+      ]
     ]
   ]
-]
