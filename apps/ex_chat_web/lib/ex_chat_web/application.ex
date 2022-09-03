@@ -10,7 +10,7 @@ defmodule ExChatWeb.Application do
     topologies = Application.get_env(:libcluster, :topologies) || []
 
     children = [
-      {Cluster.Supervisor, [topologies, [name: ExChat.ClusterSupervisor]]},
+      {Cluster.Supervisor, [topologies, [name: ExChatWeb.ClusterSupervisor]]},
       # Start the Telemetry supervisor
       ExChatWeb.Telemetry,
       # Start the Endpoint (http/https)
