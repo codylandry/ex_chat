@@ -24,7 +24,7 @@ defmodule ExChatWeb.MixProject do
   def application do
     [
       mod: {ExChatWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :eex]
     ]
   end
 
@@ -51,7 +51,8 @@ defmodule ExChatWeb.MixProject do
       {:phoenix_ecto, "~> 4.4"},
       {:tailwind, "~> 0.1.8"},
       {:ex_chat_dal, in_umbrella: true},
-      {:ex_chat_otp, in_umbrella: true}
+      {:ex_chat_otp, in_umbrella: true},
+      {:libcluster, "~> 3.1"}
     ]
   end
 

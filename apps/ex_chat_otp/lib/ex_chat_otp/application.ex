@@ -7,7 +7,10 @@ defmodule ExChatOtp.Application do
 
   @impl true
   def start(_type, _args) do
+    topologies = Application.get_env(:libcluster, :topologies) || []
+
     children = [
+      {Cluster.Supervisor, [topologies, [name: ExChat.ClusterSupervisor]]},
       {Phoenix.PubSub, name: ExChatOtp.PubSub},
       {Registry, keys: :unique, name: ExChatOtp.ChannelRegistry},
       ExChatOtp.ChannelSupervisor,

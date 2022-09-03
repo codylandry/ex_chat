@@ -20,7 +20,7 @@ defmodule ExChatDal.MixProject do
   def application do
     [
       mod: {ExChatDal, []},
-      extra_applications: [:logger]
+      extra_applications: [:logger, :crypto]
     ]
   end
 

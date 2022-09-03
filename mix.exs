@@ -6,7 +6,8 @@ defmodule ExChat.MixProject do
       apps_path: "apps",
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      releases: releases()
     ]
   end
 
@@ -16,8 +17,13 @@ defmodule ExChat.MixProject do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-    [
-      {:distillery, "~> 2.1"}
-    ]
+    []
   end
+
+  def releases,
+    do: [
+      ex_chat: [
+        applications: [ex_chat_web: :permanent, ex_chat_otp: :permanent]
+      ]
+    ]
 end

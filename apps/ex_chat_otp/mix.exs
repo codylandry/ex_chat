@@ -29,6 +29,7 @@ defmodule ExChatOtp.MixProject do
     [
       {:uuid, "~> 1.1"},
       {:phoenix_pubsub, "~> 2.1"},
+      {:libcluster, "~> 3.1"},
       {:ex_chat_dal, in_umbrella: true}
     ]
   end
