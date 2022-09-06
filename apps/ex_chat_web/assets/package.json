@@ -7,7 +7,7 @@
     "deploy": "cd .. && mix assets.deploy && rm -f _build/esbuild",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Cody Landry <cody.landry@inmar.com>",
+  "author": "Cody Landry",
   "license": "ISC",
   "dependencies": {
     "alpinejs": "^3.10.3",
