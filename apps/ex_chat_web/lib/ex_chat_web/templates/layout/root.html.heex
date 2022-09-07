@@ -30,8 +30,8 @@
 
           </li>
           <%= if !@current_user do %>
-            <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-            <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+            <li><%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "text-neutral-content" %></li>
+            <li><%= link "Log in", to: Routes.user_session_path(@conn, :new), class: "text-neutral-content" %></li>
           <% end %>
         </ul>
       </div>
