@@ -56,6 +56,7 @@ defmodule ExChatWeb.LiveHelpers do
     ~H"""
     <div id={"post-#{assigns.post.id}"} class="app__main__post group mb-5 first-of-type:mb-0">
       <div class="app__main__post__email text-sm text-accent"><%= @post.author.username %></div>
+      <%= @post.inserted_at || "no inserted at" %>
       <div class="app__main__post__content text-md"><%= @post.content %></div>
       <%= if @post.author.id == @current_user.id do %>
         <span class="app__main__post__options dropdown dropdown-left">

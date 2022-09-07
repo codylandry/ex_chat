@@ -61,7 +61,9 @@ defmodule ExChatWeb.Live.App do
   def handle_event("add-post", params, socket) do
     post = %{
       author_id: socket.assigns.current_user.id,
-      content: params["content"]
+      content: params["content"],
+      inserted_at: Time.utc_now(),
+      updated_at: Time.utc_now()
     }
 
     ChannelServer.add_post(socket.assigns.channel.id, post)
