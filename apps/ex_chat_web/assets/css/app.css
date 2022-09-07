@@ -87,7 +87,7 @@ body {
     grid-area: main;
     padding: 10px;
     display: flex;
-    flex-flow: column-reverse;
+    flex-flow: column;
     max-height: calc(var(--app-height) - var(--compose-height));
     overflow-y: auto;
     margin-bottom: 5px
