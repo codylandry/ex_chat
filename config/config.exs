@@ -38,9 +38,7 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
-config :ex_chat_dal, ExChatDal.Mailer,
-  adapter: Swoosh.Adapters.Sendinblue,
-  api_key: System.get_env("SEND_IN_BLUE_API_KEY")
+config :ex_chat_dal, ExChatDal.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configures Elixir's Logger
 config :logger, :console,

@@ -2,7 +2,6 @@ defmodule ExChatDal.Channels.Channel do
   use Ecto.Schema
   import Ecto.Changeset
   alias __MODULE__
-  alias ExChatDal.{Posts.Post}
 
   schema "channels" do
     field(:name, :string)

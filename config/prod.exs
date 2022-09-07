@@ -17,6 +17,10 @@ config :ex_chat_dal, ExChatDal.Repo,
   url: System.get_env("DATABASE_URL"),
   pool_size: 10
 
+config :ex_chat_dal, ExChatDal.Mailer,
+       adapter: Swoosh.Adapters.Sendinblue,
+       api_key: System.get_env("SEND_IN_BLUE_API_KEY")
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
