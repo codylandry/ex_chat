@@ -85,12 +85,18 @@ body {
 
 .app__main {
     grid-area: main;
-    padding: 10px;
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
+    padding: 10px;
     max-height: calc(var(--app-height) - var(--compose-height));
     overflow-y: auto;
-    margin-bottom: 5px
+    margin-bottom: 5px;
+}
+
+.app__main__posts {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
 }
 
 .app__main__post {

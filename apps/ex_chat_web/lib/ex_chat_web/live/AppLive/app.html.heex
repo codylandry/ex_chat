@@ -60,12 +60,14 @@
 
   <%= if @channel.id do %>
     <div class="app__main" id="posts-container" phx-hook="PostContainerScrollHandler">
-      <%= if length(@posts) == 0 do %>
-        <span>Looks like you're the first one here.</span>
-      <% end %>
-      <%= for post <- Enum.sort_by(@posts, &(&1.inserted_at), {:desc, Date}) do %>
-        <.post post={post} current_user={@current_user}></.post>
-      <% end %>
+      <div class="app__main__posts">
+        <%= if length(@posts) == 0 do %>
+          <span>Looks like you're the first one here.</span>
+        <% end %>
+        <%= for post <- Enum.sort_by(@posts, &(&1.inserted_at), {:asc, Date}) do %>
+          <.post post={post} current_user={@current_user}></.post>
+        <% end %>
+      </div>
     </div>
 
     <div class="app__compose z-0">
