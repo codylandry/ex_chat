@@ -23,7 +23,8 @@ defmodule ExChat.MixProject do
   def releases,
     do: [
       ex_chat: [
-        applications: [ex_chat_web: :permanent, ex_chat_otp: :permanent]
+        applications: [ex_chat_web: :permanent, ex_chat_otp: :permanent],
+        cookie: System.get_env("ERL_COOKIE")
       ]
     ]
 end
