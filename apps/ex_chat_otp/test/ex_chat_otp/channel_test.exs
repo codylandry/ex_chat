@@ -1,5 +1,5 @@
 defmodule ExChatOtpChannelTest do
   use ExUnit.Case
-  alias ExChatOtp.{Channel, User, Post}
-  doctest ExChatOtp.Channel
+  alias ExChatOtp.{ChannelServer}
+  doctest ExChatOtp.ChannelServer
 end

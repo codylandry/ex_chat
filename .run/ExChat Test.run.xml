@@ -1,8 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ExChatOtp Test" type="MixExUnitRunConfigurationType" factoryName="Elixir Mix ExUnit">
-    <module name="ex_chat" />
     <working-directory url="file://$PROJECT_DIR$/apps/ex_chat_otp" />
-    <module name="ex_chat" />
     <module-filters inherit-application-module-filters="true" />
     <method v="2" />
   </configuration>

@@ -7,13 +7,15 @@ defmodule ExChatDal.AppFixtures do
   @doc """
   Generate a app_name.
   """
+  require ExChatDal
+
   def app_name_fixture(attrs \\ %{}) do
     {:ok, app_name} =
       attrs
       |> Enum.into(%{
         name: "some name"
       })
-      |> ExChatDal.App.create_app_name()
+      |> ExChatDal.create_app_name()
 
     app_name
   end

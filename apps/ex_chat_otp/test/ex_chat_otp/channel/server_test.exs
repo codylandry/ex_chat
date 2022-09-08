@@ -1,12 +1,13 @@
 defmodule ExChatOtpChannelServerTest do
   use ExUnit.Case, async: true
   import ExUnit.CaptureLog
-  alias ExChatOtp.{ChannelServer, Channel, User, Post}
+  alias ExChatDal.{Channels, Posts, Accounts}
+  alias ExChatOtp.{ChannelServer}
 
   def random_id, do: Enum.random(0..10000)
 
   setup do
-    channel = Channel.new(id: random_id(), name: "my-channel")
+    channel = Channels.create_channel(id: random_id(), name: "my-channel")
     {:ok, pid} = ChannelServer.start_link(channel)
 
     on_exit(fn ->
