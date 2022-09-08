@@ -19,7 +19,7 @@ defmodule ExChatDal.Accounts.UserToken do
     field :sent_to, :string
     belongs_to :user, ExChatDal.Accounts.User
 
-    timestamps(updated_at: false)
+    timestamps(type: :utc_datetime_usec, updated_at: false)
   end
 
   @doc """

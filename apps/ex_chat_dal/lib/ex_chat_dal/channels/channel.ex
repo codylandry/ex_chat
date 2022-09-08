@@ -13,7 +13,7 @@ defmodule ExChatDal.Channels.Channel do
 
     has_many(:posts, ExChatDal.Posts.Post)
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   def changeset(channel, attrs) do

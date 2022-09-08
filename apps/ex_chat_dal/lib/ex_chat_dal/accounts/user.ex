@@ -14,7 +14,7 @@ defmodule ExChatDal.Accounts.User do
       join_keys: [member_id: :id, channel_id: :id]
     )
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   @doc """

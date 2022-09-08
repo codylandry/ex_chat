@@ -46,44 +46,37 @@ Channels.add_member(random_channel.id, fred.id)
 
 # Posts
 
-Posts.create_post(%{
-  channel_id: general_channel.id,
+Posts.create_post(general_channel.id, %{
   author_id: bob.id,
   content: "Hi! My name is bob"
 })
 
-Posts.create_post(%{
-  channel_id: general_channel.id,
+Posts.create_post(general_channel.id, %{
   author_id: tom.id,
   content: "Hi Bob!, how are you?"
 })
 
-Posts.create_post(%{
-  channel_id: general_channel.id,
+Posts.create_post(general_channel.id, %{
   author_id: fred.id,
   content: "Welcome Bob!"
 })
 
-Posts.create_post(%{
-  channel_id: general_channel.id,
+Posts.create_post(general_channel.id, %{
   author_id: bob.id,
   content: "Thanks everyone!"
 })
 
-Posts.create_post(%{
-  channel_id: random_channel.id,
+Posts.create_post(random_channel.id, %{
   author_id: bob.id,
   content: "something random"
 })
 
-Posts.create_post(%{
-  channel_id: random_channel.id,
+Posts.create_post(random_channel.id, %{
   author_id: fred.id,
   content: "very funny"
 })
 
-Posts.create_post(%{
-  channel_id: updates_channel.id,
+Posts.create_post(updates_channel.id, %{
   author_id: tom.id,
   content: "Today, I greeted bob"
 })

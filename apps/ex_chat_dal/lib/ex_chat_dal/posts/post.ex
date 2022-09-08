@@ -8,7 +8,7 @@ defmodule ExChatDal.Posts.Post do
     belongs_to :channel, ExChatDal.Channels.Channel
     belongs_to :author, ExChatDal.Accounts.User
 
-    timestamps()
+    timestamps([type: :utc_datetime_usec])
   end
 
   def changeset(%Post{} = post, attrs) do
